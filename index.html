@@ -17,10 +17,13 @@
       --bg0:#0b1020;
       --bg1:#0a1430;
       --bg2:#071026;
+
       --card: rgba(255,255,255,.06);
       --card2: rgba(255,255,255,.09);
+
       --line: rgba(255,255,255,.14);
       --line2: rgba(255,255,255,.22);
+
       --text:#eaf0ff;
       --muted: rgba(234,240,255,.72);
 
@@ -31,29 +34,50 @@
       --conflict:#ff4b4b;
       --neutral:#7f9ccf;
 
-      --shadow: 0 14px 34px rgba(0,0,0,.42);
-      --shadow2: 0 10px 22px rgba(0,0,0,.36);
+      /* HARD EDGES */
+      --r: 4px;
+      --r2: 6px;
 
-      --r: 12px;
-      --r2: 14px;
+      /* industrial strokes */
+      --stroke: rgba(255,255,255,.18);
+      --stroke2: rgba(43,109,255,.35);
+
+      /* harsher shadows */
+      --shadow: 0 22px 0 rgba(0,0,0,.22), 0 40px 60px rgba(0,0,0,.55);
+      --shadow2: 0 10px 0 rgba(0,0,0,.18), 0 18px 24px rgba(0,0,0,.35);
 
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --ui: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+
+      /* glitch/noise controls */
+      --grain: .16;     /* 0..1 */
+      --scan: .16;      /* 0..1 */
     }
 
+    /* “Day” becomes overcast terminal (NOT white) */
     :root[data-theme="day"]{
-      --bg0:#f4f6fb;
-      --bg1:#eef2ff;
-      --bg2:#f9fbff;
-      --card: rgba(255,255,255,.82);
-      --card2: rgba(255,255,255,.92);
-      --line: rgba(15,27,58,.14);
-      --line2: rgba(15,27,58,.22);
-      --text:#0f1b3a;
-      --muted: rgba(15,27,58,.72);
+      --bg0:#e7edf9;
+      --bg1:#cfdaf5;
+      --bg2:#aebfe9;
 
-      --shadow: 0 10px 26px rgba(15,27,58,.14);
-      --shadow2: 0 6px 16px rgba(15,27,58,.12);
+      --card: rgba(10,16,32,.78);
+      --card2: rgba(10,16,32,.86);
+
+      --line: rgba(0,0,0,.22);
+      --line2: rgba(0,0,0,.32);
+
+      --text:#eef3ff;
+      --muted: rgba(238,243,255,.72);
+
+      --shadow: 0 22px 0 rgba(0,0,0,.12), 0 32px 44px rgba(0,0,0,.28);
+      --shadow2: 0 10px 0 rgba(0,0,0,.10), 0 18px 22px rgba(0,0,0,.20);
+    }
+
+    :root[data-theme="night"]{
+      /* explicit in case you ever set only night attribute */
+      --bg0:#0b1020;
+      --bg1:#0a1430;
+      --bg2:#071026;
     }
 
     *{ box-sizing:border-box; }
@@ -69,30 +93,64 @@
         linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 55%, var(--bg2) 100%);
     }
 
-    /* “glitchy / ops-room” overlay */
+    /* Scanlines */
     body:before{
       content:"";
       position:fixed; inset:0;
       pointer-events:none;
-      background:
-        repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, rgba(0,0,0,0) 1px 6px),
-        repeating-linear-gradient(90deg, rgba(255,255,255,.02) 0 1px, rgba(0,0,0,0) 1px 10px);
-      mix-blend-mode: overlay;
-      opacity:.20;
       z-index:2;
+      opacity: var(--scan);
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(255,255,255,.06) 0 1px,
+          rgba(0,0,0,0) 1px 6px
+        );
+      mix-blend-mode: overlay;
     }
 
-    /* vignette */
+    /* Vignette + subtle vertical bars */
     body:after{
       content:"";
-      position:fixed; inset:-1px;
+      position:fixed; inset:0;
       pointer-events:none;
-      background: radial-gradient(1200px 800px at 50% 30%, transparent 40%, rgba(0,0,0,.45) 100%);
-      opacity: .22;
       z-index:2;
+      background:
+        radial-gradient(1200px 800px at 50% 30%, transparent 40%, rgba(0,0,0,.55) 100%),
+        repeating-linear-gradient(
+          90deg,
+          rgba(43,109,255,.03) 0 2px,
+          rgba(0,0,0,0) 2px 14px
+        );
+      opacity: .22;
+    }
+
+    /* Grain layer */
+    @keyframes grainShift{
+      0%{ transform:translate(0,0) }
+      20%{ transform:translate(-2%,1%) }
+      40%{ transform:translate(1%,-2%) }
+      60%{ transform:translate(2%,2%) }
+      80%{ transform:translate(-1%,2%) }
+      100%{ transform:translate(0,0) }
+    }
+    #grain{
+      position:fixed; inset:-20%;
+      pointer-events:none;
+      z-index:3;
+      opacity: var(--grain);
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      animation: grainShift 2.2s steps(2,end) infinite;
     }
 
     #map{ position:fixed; inset:0; z-index:1; }
+
+    /* --- Brutal, cut-corner geometry --- */
+    .cutCorner{
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    }
 
     /* Topbar */
     #topbar{
@@ -102,26 +160,27 @@
       padding:10px 12px;
       display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
       background: var(--card2);
-      border:1px solid var(--line);
-      border-radius: var(--r2);
+      border:1px solid var(--stroke);
+      border-radius: 2px;
       box-shadow:var(--shadow2);
       backdrop-filter: blur(12px);
       opacity:0;
       transform: translateY(-8px);
       pointer-events:none;
       transition: opacity .28s ease, transform .28s ease, background .16s ease, border-color .16s ease;
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
     }
     #topbar.ready{ opacity:1; transform: translateY(0); pointer-events:auto; }
 
     .brand{ display:flex; align-items:center; gap:12px; min-width:260px; }
     .emblem{
       width:40px; height:40px;
-      border-radius: 10px;
-      border:1px solid var(--line);
+      border-radius: 4px;
+      border:1px solid var(--stroke);
       background:
         radial-gradient(circle at 35% 30%, rgba(43,109,255,.38), rgba(27,63,191,.12) 55%, rgba(255,255,255,.10) 100%),
         linear-gradient(135deg, rgba(255,204,51,.18), transparent 45%);
-      box-shadow: 0 0 0 6px rgba(43,109,255,.08);
+      box-shadow: 0 0 0 2px rgba(255,204,51,.22), 0 0 0 7px rgba(43,109,255,.14);
       position:relative; overflow:hidden;
       flex:0 0 auto;
     }
@@ -145,49 +204,67 @@
       letter-spacing:.22em;
       text-transform:uppercase;
       color: var(--member);
+      text-shadow: 1px 0 rgba(43,109,255,.35), -1px 0 rgba(255,204,51,.25);
     }
-    .brand .sub{ margin:4px 0 0 0; font-size:12px; color:var(--muted); }
+    .brand .sub{ margin:4px 0 0 0; font-size:12px; color:var(--muted); font-family: var(--mono); opacity:.9; }
+
+    /* Subtle jitter for title */
+    @keyframes jitter{
+      0%,100%{ transform:translate(0,0) }
+      92%{ transform:translate(0,0) }
+      93%{ transform:translate(1px,-1px) }
+      94%{ transform:translate(-1px,1px) }
+      95%{ transform:translate(2px,0) }
+      96%{ transform:translate(-2px,0) }
+      97%{ transform:translate(1px,1px) }
+      98%{ transform:translate(0,-1px) }
+      99%{ transform:translate(0,0) }
+    }
+    #topbar.ready .brand h1{ animation: jitter 6.5s infinite; }
 
     .controls{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 
+    /* Kill bubbly feel globally */
     input, select, button{
-      border-radius: 10px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.08);
+      border-radius: 2px !important;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.28);
       color: var(--text);
       padding:9px 11px;
       outline:none;
       transition: box-shadow .16s ease, border-color .16s ease, transform .10s ease, background .16s ease, color .16s ease;
       backdrop-filter: blur(10px);
+      font-family: var(--mono);
+      letter-spacing: .02em;
     }
-
-    :root[data-theme="day"] input,
-    :root[data-theme="day"] select,
-    :root[data-theme="day"] button{
-      background: rgba(255,255,255,.88);
-      color: var(--text);
-    }
-
     input{ min-width: 220px; }
     input::placeholder{ color: rgba(234,240,255,.55); }
-    :root[data-theme="day"] input::placeholder{ color: rgba(15,27,58,.55); }
 
     button{ cursor:pointer; }
-    button:hover{ border-color: var(--line2); box-shadow: 0 0 0 4px rgba(43,109,255,.12); }
+    button{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.18)) !important;
+      border-color: rgba(255,255,255,.18) !important;
+    }
+    button:hover{
+      border-color: rgba(255,255,255,.26) !important;
+      box-shadow: 0 0 0 2px rgba(43,109,255,.18), 0 0 0 6px rgba(255,204,51,.08) !important;
+    }
     button:active{ transform: translateY(1px); }
 
     .primary{
-      border-color: rgba(43,109,255,.38);
-      background: linear-gradient(180deg, rgba(43,109,255,.20), rgba(43,109,255,.08));
+      border-color: rgba(43,109,255,.55) !important;
+      background: linear-gradient(90deg, rgba(43,109,255,.28), rgba(255,204,51,.12)) !important;
     }
 
-    /* Night mode dropdown usability: make the popup list dark so white text is readable */
-    :root[data-theme="night"] select{
+    /* Dropdown usability: dark popup list in BOTH themes */
+    :root[data-theme="night"] select,
+    :root[data-theme="day"] select{
       background: #000 !important;
       color: #fff !important;
       border-color: rgba(255,255,255,.20);
     }
-    :root[data-theme="night"] select option{
+    :root[data-theme="night"] select option,
+    :root[data-theme="day"] select option{
       background: #000 !important;
       color: #fff !important;
     }
@@ -196,8 +273,8 @@
       position:fixed; z-index:25;
       left:16px; bottom:16px;
       background: var(--card2);
-      border:1px solid var(--line);
-      border-radius: 12px;
+      border:1px solid var(--stroke);
+      border-radius: 2px;
       padding:10px 12px;
       box-shadow:var(--shadow2);
       backdrop-filter: blur(12px);
@@ -208,11 +285,12 @@
       transform: translateY(10px);
       pointer-events:none;
       transition: opacity .28s ease, transform .28s ease;
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
     }
     #statusline.ready{ opacity:1; transform: translateY(0); pointer-events:auto; }
-    .pillDot{ width:9px; height:9px; border-radius:50%; background:var(--member); box-shadow: 0 0 0 4px rgba(43,109,255,.16); }
-    #statusline b{ color:var(--text); }
-    #clockInfo{ display:none; white-space:nowrap; }
+    .pillDot{ width:9px; height:9px; border-radius:0; background:var(--member); box-shadow: 0 0 0 3px rgba(43,109,255,.18); }
+    #statusline b{ color:var(--text); font-family: var(--mono); }
+    #clockInfo{ display:none; white-space:nowrap; font-family: var(--mono); }
     #clockInfo.on{ display:inline; }
 
     #drawer{
@@ -220,86 +298,77 @@
       top:88px; left:16px; bottom:16px;
       width:min(480px, calc(100vw - 32px));
       background: var(--card2);
-      border:1px solid var(--line);
-      border-radius: var(--r2);
+      border:1px solid var(--stroke);
+      border-radius: 2px;
       box-shadow:var(--shadow);
       backdrop-filter: blur(12px);
       transform: translateX(-112%);
       transition: transform .22s ease;
       overflow:hidden;
       display:flex; flex-direction:column;
+      clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
     }
     #drawer.open{ transform: translateX(0); }
 
+    /* Tape-label header vibe */
     .drawerHead{
       padding:14px 14px 12px 14px;
-      border-bottom:1px solid var(--line);
+      border-bottom:1px dashed rgba(255,255,255,.22);
       display:flex; gap:12px; align-items:center; justify-content:space-between;
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-    }
-    :root[data-theme="day"] .drawerHead{
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(247,249,255,.85));
+      background: linear-gradient(90deg, rgba(255,204,51,.14), rgba(43,109,255,.12), rgba(255,255,255,.02));
     }
 
     .drawerTitle{ display:flex; align-items:center; gap:10px; min-width:0; }
     .flagBig{
       width:44px; height:44px;
-      border-radius: 12px;
+      border-radius: 2px;
       display:grid; place-items:center;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.08);
-      box-shadow:0 0 0 6px rgba(43,109,255,.10);
+      border:1px dashed rgba(255,255,255,.20);
+      background: rgba(0,0,0,.22);
+      box-shadow: 0 0 0 2px rgba(43,109,255,.18);
       font-size:22px;
       flex:0 0 auto;
     }
-    :root[data-theme="day"] .flagBig{ background: rgba(255,255,255,.92); }
 
     .titleText{ min-width:0; }
-    .titleText h2{ margin:0; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .titleText h2{
+      margin:0; font-size:16px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      font-family: var(--mono);
+      letter-spacing:.02em;
+    }
     .titleText .mini{
-      margin-top:2px;
+      margin-top:4px;
       font-size:12px;
       color:var(--muted);
       display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+      font-family: var(--mono);
     }
 
     .badge{
       padding:4px 9px;
-      border-radius: 999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.06);
+      border-radius: 2px !important;
+      border:1px dashed rgba(255,255,255,.22) !important;
+      background: rgba(0,0,0,.22) !important;
       font-size:12px;
       color:var(--muted);
       white-space:nowrap;
+      font-family: var(--mono);
+      letter-spacing:.06em;
+      text-transform:uppercase;
     }
-    :root[data-theme="day"] .badge{ background: rgba(255,255,255,.92); border-color: rgba(15,27,58,.14); }
-
-    .badge.member{ border-color: rgba(43,109,255,.45); color: rgba(180,210,255,.92); }
-    .badge.founding{ border-color: rgba(255,204,51,.60); color: rgba(255,236,170,.92); }
-    .badge.observer{ border-color: rgba(242,153,74,.55); color: rgba(255,210,170,.92); }
-    .badge.invite{ border-color: rgba(24,169,153,.55); color: rgba(170,255,235,.92); }
-    .badge.conflict{ border-color: rgba(255,75,75,.55); color: rgba(255,180,190,.92); }
-    .badge.hq{ border-color: rgba(43,109,255,.45); color: rgba(180,210,255,.92); }
-
-    :root[data-theme="day"] .badge.member{ color:#1033a3; }
-    :root[data-theme="day"] .badge.founding{ color:#7c5b00; }
-    :root[data-theme="day"] .badge.observer{ color:#7b3f00; }
-    :root[data-theme="day"] .badge.invite{ color:#0b5b51; }
-    :root[data-theme="day"] .badge.conflict{ color:#7b1414; }
-    :root[data-theme="day"] .badge.hq{ color:#1033a3; }
 
     .drawerActions{ display:flex; gap:8px; align-items:center; }
     .iconBtn{
       width:38px; height:38px;
-      border-radius: 12px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.06);
+      border-radius: 2px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.22);
       cursor:pointer;
       display:grid; place-items:center;
+      font-family: var(--mono);
     }
-    :root[data-theme="day"] .iconBtn{ background: rgba(255,255,255,.92); }
-
-    .iconBtn:hover{ box-shadow: 0 0 0 4px rgba(43,109,255,.12); }
+    .iconBtn:hover{ box-shadow: 0 0 0 2px rgba(43,109,255,.18), 0 0 0 6px rgba(255,204,51,.08); }
 
     .drawerBody{
       padding:12px 14px 14px 14px;
@@ -308,16 +377,11 @@
       min-height:0;
     }
     .card{
-      border:1px solid var(--line);
-      border-radius: var(--r);
-      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 2px;
+      background: rgba(0,0,0,.16);
       box-shadow: 0 10px 22px rgba(0,0,0,.18);
       padding:12px;
-    }
-    :root[data-theme="day"] .card{
-      background: rgba(255,255,255,.90);
-      border-color: rgba(15,27,58,.14);
-      box-shadow: 0 6px 14px rgba(15,27,58,.10);
     }
 
     .card h3{
@@ -327,16 +391,14 @@
       text-transform:uppercase;
       color:var(--muted);
     }
+
     .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
     .kv{
-      border:1px solid var(--line);
-      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 2px;
       padding:10px;
-      background: rgba(255,255,255,.04);
-    }
-    :root[data-theme="day"] .kv{
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(251,252,255,.92));
-      border-color: rgba(15,27,58,.14);
+      background: rgba(0,0,0,.16);
     }
     .kv .k{
       font: 11px/1.1 var(--mono);
@@ -344,10 +406,10 @@
       text-transform:uppercase;
       color:var(--muted);
     }
-    .kv .v{ margin-top:6px; font-weight:650; color:var(--text); overflow-wrap:anywhere; }
+    .kv .v{ margin-top:6px; font-weight:650; color:var(--text); overflow-wrap:anywhere; font-family: var(--mono); }
 
-    .note{ margin:0; color:var(--muted); }
-    .link{ color: var(--member); text-decoration: none; border-bottom: 1px dotted rgba(43,109,255,.55); }
+    .note{ margin:0; color:var(--muted); font-family: var(--ui); }
+    .link{ color: var(--member); text-decoration: none; border-bottom: 1px dotted rgba(43,109,255,.65); font-family: var(--mono); }
     .link:hover{ border-bottom-color: rgba(43,109,255,.95); }
 
     #intro{
@@ -356,7 +418,6 @@
       display:grid; place-items:center;
       transition: opacity .28s ease;
     }
-    :root[data-theme="day"] #intro{ background: #ffffff; }
     #intro.hidden{ opacity:0; pointer-events:none; }
     #introCanvas{
       width:min(760px, calc(100vw - 36px));
@@ -373,45 +434,39 @@
       width: 320px;
       max-height: min(520px, calc(100vh - 140px));
       background: var(--card2);
-      border: 1px solid var(--line);
-      border-radius: var(--r2);
+      border: 1px solid var(--stroke);
+      border-radius: 2px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
       overflow: hidden;
       display:flex;
       transition: transform .22s ease;
+      clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
     }
     #fictionPanel.closed{ transform: translate( calc(100% - 46px), -50% ); }
 
     .fictionHandle{
       width:46px;
-      border-right: 1px solid var(--line);
+      border-right: 1px dashed rgba(255,255,255,.22);
       display:flex;
       align-items:center;
       justify-content:center;
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      background: linear-gradient(180deg, rgba(255,204,51,.10), rgba(43,109,255,.08), rgba(255,255,255,.02));
       flex:0 0 auto;
-    }
-    :root[data-theme="day"] .fictionHandle{
-      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(247,249,255,.85));
-      border-right-color: rgba(15,27,58,.14);
     }
 
     .fictionHandle button{
       width:34px; height:34px;
       padding:0;
-      border-radius: 12px;
+      border-radius: 2px;
       display:grid; place-items:center;
-      border:1px solid var(--line);
+      border:1px solid rgba(255,255,255,.18);
       background: rgba(0,0,0,.55);
       cursor:pointer;
       color:#fff;
+      font-family: var(--mono);
     }
-    :root[data-theme="day"] .fictionHandle button{
-      background: rgba(255,255,255,.92);
-      color: var(--text);
-      border-color: rgba(15,27,58,.14);
-    }
+    .fictionHandle button:hover{ box-shadow: 0 0 0 2px rgba(43,109,255,.18), 0 0 0 6px rgba(255,204,51,.08); }
 
     .fictionBody{
       padding:12px;
@@ -425,9 +480,8 @@
     .fictionTitle{
       display:flex; align-items:baseline; justify-content:space-between; gap:10px;
       padding-bottom:8px;
-      border-bottom:1px solid var(--line);
+      border-bottom:1px dashed rgba(255,255,255,.22);
     }
-    :root[data-theme="day"] .fictionTitle{ border-bottom-color: rgba(15,27,58,.14); }
 
     .fictionTitle h3{
       margin:0;
@@ -436,13 +490,13 @@
       text-transform:uppercase;
       color:var(--muted);
     }
-    .fictionHint{ font-size:12px; color:var(--muted); white-space:nowrap; }
+    .fictionHint{ font-size:12px; color:var(--muted); white-space:nowrap; font-family: var(--mono); opacity:.85; }
 
     .fictionList{ display:flex; flex-direction:column; gap:8px; }
     .fictionItem{
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.05);
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
       padding:10px;
       cursor:pointer;
       display:flex;
@@ -451,13 +505,9 @@
       gap:10px;
       transition: transform .10s ease, border-color .16s ease, box-shadow .16s ease;
     }
-    :root[data-theme="day"] .fictionItem{
-      background: rgba(255,255,255,.90);
-      border-color: rgba(15,27,58,.14);
-    }
     .fictionItem:hover{
-      border-color: var(--line2);
-      box-shadow: 0 0 0 4px rgba(43,109,255,.10);
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 0 0 2px rgba(43,109,255,.18), 0 0 0 6px rgba(255,204,51,.08);
     }
     .fictionItem:active{ transform: translateY(1px); }
 
@@ -469,6 +519,8 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+      font-family: var(--mono);
+      letter-spacing:.02em;
     }
     .fictionItem .sub{
       margin-top:4px;
@@ -477,45 +529,51 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+      font-family: var(--mono);
     }
     .fictionItem .right{ display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+
     .miniBadge{
       padding:3px 8px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.05);
+      border-radius:2px !important;
+      border:1px dashed rgba(255,255,255,.22) !important;
+      background: rgba(0,0,0,.22) !important;
       font-size:12px;
       color:var(--muted);
       white-space:nowrap;
+      font-family: var(--mono);
+      letter-spacing:.06em;
+      text-transform:uppercase;
     }
-    :root[data-theme="day"] .miniBadge{
-      background: rgba(255,255,255,.92);
-      border-color: rgba(15,27,58,.14);
-    }
-    .miniBadge.member{ border-color: rgba(43,109,255,.45); }
-    .miniBadge.invite{ border-color: rgba(24,169,153,.55); }
-    .miniBadge.neutral{ border-color: rgba(127,156,207,.55); }
+    .miniBadge.member{ border-color: rgba(43,109,255,.45) !important; }
+    .miniBadge.invite{ border-color: rgba(24,169,153,.55) !important; }
+    .miniBadge.neutral{ border-color: rgba(127,156,207,.55) !important; }
 
     /* Leaflet UI */
     .leaflet-control-attribution{
       background: var(--card2) !important;
-      border: 1px solid var(--line) !important;
-      border-radius: 12px !important;
+      border: 1px solid rgba(255,255,255,.18) !important;
+      border-radius: 2px !important;
       box-shadow: var(--shadow2);
       backdrop-filter: blur(12px);
       color: var(--muted) !important;
+      font-family: var(--mono);
     }
     .leaflet-control-zoom a{
       background: var(--card2) !important;
-      border: 1px solid var(--line) !important;
+      border: 1px solid rgba(255,255,255,.18) !important;
       color: var(--text) !important;
+      border-radius: 2px !important;
+      font-family: var(--mono);
     }
     .leaflet-popup-content-wrapper, .leaflet-popup-tip{
       background: var(--card2) !important;
-      border: 1px solid var(--line) !important;
+      border: 1px solid rgba(255,255,255,.18) !important;
       box-shadow: var(--shadow2);
       color: var(--text) !important;
       backdrop-filter: blur(12px);
+      border-radius: 2px !important;
+      font-family: var(--ui);
     }
 
     @media (max-width: 720px){
@@ -537,68 +595,58 @@
       z-index:80;
       display:none;
       place-items:center;
-      background: rgba(0,0,0,.55);
+      background: rgba(0,0,0,.65);
       backdrop-filter: blur(12px);
     }
     #ofnOverlay.open{ display:grid; }
 
     #ofnModal{
-      width:min(820px, calc(100vw - 28px));
-      max-height: min(78vh, 740px);
+      width:min(860px, calc(100vw - 28px));
+      max-height: min(78vh, 760px);
       overflow:auto;
-      border-radius: 16px;
+      border-radius: 2px;
       border:1px solid rgba(255,255,255,.18);
       background:
         radial-gradient(900px 380px at 30% 0%, rgba(43,109,255,.22), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
-      box-shadow: 0 26px 60px rgba(0,0,0,.55);
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.22));
+      box-shadow: 0 26px 60px rgba(0,0,0,.65);
       position:relative;
-    }
-    :root[data-theme="day"] #ofnModal{
-      border-color: rgba(15,27,58,.18);
-      background:
-        radial-gradient(900px 380px at 30% 0%, rgba(43,109,255,.16), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.86));
-      box-shadow: 0 18px 46px rgba(15,27,58,.20);
+      clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
     }
 
     .ofnHead{
       padding:14px 14px 10px 14px;
-      border-bottom:1px solid rgba(255,255,255,.14);
+      border-bottom:1px dashed rgba(255,255,255,.22);
       display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
       position:sticky; top:0;
       background: inherit;
       backdrop-filter: blur(12px);
       z-index:2;
     }
-    :root[data-theme="day"] .ofnHead{ border-bottom-color: rgba(15,27,58,.14); }
-
     .ofnHead h2{
       margin:0;
       font: 14px/1.1 var(--mono);
       letter-spacing:.22em;
       text-transform: uppercase;
       color: var(--text);
+      text-shadow: 1px 0 rgba(43,109,255,.35), -1px 0 rgba(255,204,51,.25);
     }
     .ofnHead p{
       margin:8px 0 0 0;
       color: var(--muted);
       max-width: 64ch;
       font-size: 13px;
+      font-family: var(--ui);
     }
     .ofnClose{
       width:40px; height:40px;
-      border-radius: 12px;
+      border-radius: 2px;
       border:1px solid rgba(255,255,255,.18);
       background: rgba(0,0,0,.35);
       color: #fff;
       cursor:pointer;
       display:grid; place-items:center;
-    }
-    :root[data-theme="day"] .ofnClose{
-      background: rgba(255,255,255,.92);
-      color: var(--text);
-      border-color: rgba(15,27,58,.14);
+      font-family: var(--mono);
     }
 
     .ofnBody{ padding:14px; display:grid; gap:12px; }
@@ -607,15 +655,10 @@
 
     .ofnCard{
       border:1px solid rgba(255,255,255,.14);
-      border-radius: 14px;
-      background: rgba(255,255,255,.05);
+      border-radius: 2px;
+      background: rgba(0,0,0,.16);
       padding:12px;
     }
-    :root[data-theme="day"] .ofnCard{
-      border-color: rgba(15,27,58,.14);
-      background: rgba(255,255,255,.92);
-    }
-
     .ofnCard h3{
       margin:0 0 8px 0;
       font: 12px/1.1 var(--mono);
@@ -626,17 +669,13 @@
 
     .ofnImgWrap{
       position:relative;
-      border-radius: 16px;
+      border-radius: 2px;
       overflow:hidden;
       border:1px solid rgba(255,255,255,.16);
       background: rgba(0,0,0,.20);
-      box-shadow: 0 14px 28px rgba(0,0,0,.35);
-      min-height: 230px;
-    }
-    :root[data-theme="day"] .ofnImgWrap{
-      border-color: rgba(15,27,58,.14);
-      background: rgba(255,255,255,.92);
-      box-shadow: 0 10px 22px rgba(15,27,58,.16);
+      box-shadow: 0 14px 28px rgba(0,0,0,.45);
+      min-height: 240px;
+      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
     }
     .ofnImgWrap img{
       width:100%; height:100%;
@@ -650,27 +689,24 @@
     .ofnImgWrap:after{
       content:"";
       position:absolute;
-      width:120px; height:120px;
+      width:140px; height:140px;
       background: rgba(255,255,255,.92);
       mix-blend-mode: screen;
       opacity: .10;
       pointer-events:none;
       transform: rotate(45deg);
     }
-    .ofnImgWrap:before{ left:-70px; top:-70px; }
-    .ofnImgWrap:after{ right:-70px; bottom:-70px; }
+    .ofnImgWrap:before{ left:-80px; top:-80px; }
+    .ofnImgWrap:after{ right:-80px; bottom:-80px; }
 
     .ofnBanner{
-      border-radius: 14px;
+      border-radius: 2px;
       overflow:hidden;
       border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.04);
-      height: 160px;
+      background: rgba(0,0,0,.16);
+      height: 170px;
       position:relative;
-    }
-    :root[data-theme="day"] .ofnBanner{
-      border-color: rgba(15,27,58,.14);
-      background: rgba(255,255,255,.92);
+      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
     }
     .ofnBanner img{
       width:100%; height:100%;
@@ -683,31 +719,27 @@
       position:absolute;
       left:12px; bottom:12px;
       padding:6px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.18);
+      border-radius: 2px;
+      border:1px dashed rgba(255,255,255,.22);
       background: rgba(0,0,0,.35);
       color: rgba(255,255,255,.90);
       font: 11px/1.1 var(--mono);
       letter-spacing: .14em;
       text-transform: uppercase;
     }
-    :root[data-theme="day"] .ofnBanner .stamp{
-      background: rgba(255,255,255,.88);
-      color: rgba(15,27,58,.82);
-      border-color: rgba(15,27,58,.14);
-    }
   </style>
 </head>
 
 <body>
   <div id="map"></div>
+  <div id="grain" aria-hidden="true"></div>
 
   <div id="topbar" role="banner">
     <div class="brand">
       <div class="emblem" aria-hidden="true"></div>
       <div>
         <h1>Organisation of Free Nations</h1>
-        <div class="sub">Global operational map</div>
+        <div class="sub">GLOBAL OPERATIONAL MAP</div>
       </div>
     </div>
 
@@ -728,9 +760,7 @@
         <option value="night">Theme: Night</option>
       </select>
 
-      <!-- Replaces Links: Off/... -->
       <button id="clockBtn" type="button" class="primary" title="Toggle timezone clock">Clock: Off</button>
-
       <button id="focusBtn" type="button">Member focus: Off</button>
       <button id="ofnBtn" type="button">The OFN</button>
       <button id="fitBtn" type="button">Fit</button>
@@ -747,7 +777,6 @@
     </span>
   </div>
 
-  <!-- Fictional nations pull-out -->
   <aside id="fictionPanel" class="closed" aria-label="Fictional nations panel">
     <div class="fictionHandle">
       <button id="fictionToggle" type="button" title="Toggle fictional nations">◀</button>
@@ -819,7 +848,7 @@
           <h3>How to use this page</h3>
           <p class="note" style="margin:0;">
             Click a country to open the dossier panel. Use <b>Clock</b> to view local time estimates based on geographic longitude.
-            Use <b>Member focus</b> to spotlight member and founding states. Use <b>Theme</b> to swap the entire atmosphere.
+            Use <b>Member focus</b> to spotlight member and founding states. Use <b>Theme</b> to swap the atmosphere.
           </p>
         </div>
       </div>
@@ -838,7 +867,7 @@
 
   <script>
     // Bump this when you want to brute-force cache busting while testing deploys
-    const BUILD_VERSION = "2026-02-28-2";
+    const BUILD_VERSION = "2026-02-28-3";
 
     const OFN = {
       members: new Set(["Luxembourg","Falkland Islands","Israel","United States of America","Philippines","Australia","Greece","Georgia","Ireland"]),
@@ -1033,7 +1062,6 @@
 
       setBaseTiles(mode);
       syncFictionToggleIcon();
-      // keep clock pill readable if it is on
       updateClockLine();
     }
 
@@ -1081,7 +1109,7 @@
       el("dMini").innerHTML = situationBadges(n);
     }
 
-    // Fix Georgia issue: explicitly resolve known ambiguous names + detect disambiguation
+    // Fix Georgia ambiguity + detect disambiguation
     const DISAMBIG_OVERRIDES = new Map([
       ["Georgia", "Georgia (country)"]
     ]);
@@ -1182,12 +1210,8 @@
       let wiki = null;
       let titleToTry = DISAMBIG_OVERRIDES.get(n) || n;
 
-      // 1) try override/name
-      try{
-        wiki = await fetchWikiSummary(titleToTry);
-      }catch(_){}
+      try{ wiki = await fetchWikiSummary(titleToTry); }catch(_){}
 
-      // 2) detect disambiguation and retry smartly
       if (wiki && wiki.type === "disambiguation"){
         const retry = DISAMBIG_OVERRIDES.get(n) || (n === "Georgia" ? "Georgia (country)" : null);
         if (retry){
@@ -1195,7 +1219,6 @@
         }
       }
 
-      // 3) special fallback for USA
       if (!wiki && n === "United States of America"){
         try{ wiki = await fetchWikiSummary("United States"); }catch(_){}
       }
@@ -1240,19 +1263,19 @@
       const s = statusOf(name);
       const color = statusColor(s);
 
-      let fillOpacity = 0.34;
-      if (s === "member" || s === "founding") fillOpacity = 0.55;
+      let fillOpacity = 0.30;
+      if (s === "member" || s === "founding") fillOpacity = 0.58;
       if (s === "observer") fillOpacity = 0.44;
       if (s === "invite") fillOpacity = 0.44;
       if (s === "conflict") fillOpacity = 0.52;
 
-      let opacity = 0.62;
-      let weight = 1.15;
+      let opacity = 0.70;
+      let weight = 1.25;
 
       const match = matchesFilter(s);
       if (!match){
-        fillOpacity = Math.min(fillOpacity, 0.10);
-        opacity = 0.12;
+        fillOpacity = Math.min(fillOpacity, 0.08);
+        opacity = 0.10;
       }
 
       if (memberFocus && selectedName){
@@ -1261,21 +1284,20 @@
         if (selectedIsMember){
           const thisIsMember = (s === "member" || s === "founding");
           if (!thisIsMember){
-            fillOpacity = Math.min(fillOpacity, 0.07);
-            opacity = Math.min(opacity, 0.10);
+            fillOpacity = Math.min(fillOpacity, 0.06);
+            opacity = Math.min(opacity, 0.09);
             weight = 1;
           } else {
-            fillOpacity = Math.max(fillOpacity, 0.62);
-            opacity = Math.max(opacity, 0.80);
-            weight = 1.35;
+            fillOpacity = Math.max(fillOpacity, 0.64);
+            opacity = Math.max(opacity, 0.84);
+            weight = 1.45;
           }
         }
       }
 
-      // A little more visible border in night mode
       const isDay = document.documentElement.getAttribute("data-theme") === "day";
       return {
-        color: isDay ? "rgba(15,27,58,.22)" : "rgba(238,243,255,.16)",
+        color: isDay ? "rgba(0,0,0,.34)" : "rgba(238,243,255,.18)",
         weight,
         fillColor: color,
         fillOpacity,
@@ -1288,12 +1310,10 @@
       if (selectedFeature === layer) return;
 
       if (on){
-        const st = statusOf(layer.feature.properties?.name || "");
-        const isMemberish = (st === "member" || st === "founding");
         layer.setStyle({
-          weight: 2.2,
-          color: "rgba(43,109,255,.42)",
-          fillOpacity: Math.min(0.74, isMemberish ? 0.68 : 0.60)
+          weight: 2.4,
+          color: "rgba(43,109,255,.55)",
+          fillOpacity: 0.72
         });
       } else {
         layer.setStyle(styleFeature(layer.feature));
@@ -1305,10 +1325,10 @@
       countriesLayer.eachLayer((layer) => layer.setStyle(styleFeature(layer.feature)));
       if (selectedFeature){
         selectedFeature.setStyle({
-          weight: 2.8,
-          color: "rgba(43,109,255,.62)",
-          fillOpacity: 0.80,
-          opacity: 0.92
+          weight: 3.0,
+          color: "rgba(43,109,255,.75)",
+          fillOpacity: 0.82,
+          opacity: 0.95
         });
       }
     }
@@ -1325,10 +1345,10 @@
       selectedName = name;
 
       layer.setStyle({
-        weight: 2.8,
-        color: "rgba(43,109,255,.62)",
-        fillOpacity: 0.80,
-        opacity: 0.92
+        weight: 3.0,
+        color: "rgba(43,109,255,.75)",
+        fillOpacity: 0.82,
+        opacity: 0.95
       });
 
       setStatusLine(name);
@@ -1410,18 +1430,14 @@
       return `${pad2(dateUtc.getUTCHours())}:${pad2(dateUtc.getUTCMinutes())}`;
     }
 
-    function formatHHMM(date){
-      return `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
-    }
-
     function luxembourgTimeHHMM(){
       try{
         const d = new Date();
         const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Luxembourg", hour:"2-digit", minute:"2-digit", hour12:false });
         return fmt.format(d);
       }catch(_){
-        // fallback: local time
-        return formatHHMM(new Date());
+        const d = new Date();
+        return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
       }
     }
 
@@ -1453,13 +1469,11 @@
       const utcStr = `UTC ${formatUtcHHMM(u)}`;
       const hqStr = `HQ ${luxembourgTimeHHMM()}`;
 
-      // If no selection, show just UTC + HQ
       if (!selectedName){
         text.textContent = `${utcStr} · ${hqStr}`;
         return;
       }
 
-      // Fictional: no coordinates; show UTC + HQ
       if (FICTIONAL.has(canonicalName(selectedName))){
         text.textContent = `${utcStr} · ${hqStr}`;
         return;
@@ -1477,7 +1491,7 @@
       const local = new Date(localMs);
       const sign = off >= 0 ? "+" : "−";
       const abs = Math.abs(off);
-      const selStr = `${formatUtcHHMM(local)} (UTC${sign}${abs})`;
+      const selStr = `${pad2(local.getUTCHours())}:${pad2(local.getUTCMinutes())} (UTC${sign}${abs})`;
 
       text.textContent = `${selStr} · ${hqStr} · ${utcStr}`;
     }
@@ -1612,7 +1626,7 @@
         ctx.clearRect(0,0,w,h);
 
         const isDay = document.documentElement.getAttribute("data-theme") === "day";
-        ctx.fillStyle = isDay ? "#ffffff" : "#0b1020";
+        ctx.fillStyle = isDay ? "#0b1020" : "#0b1020";
         ctx.fillRect(0,0,w,h);
 
         const cx = w*0.5, cy = h*0.5;
@@ -1622,7 +1636,7 @@
         const flyT = Math.max(0, Math.min(1, (t - orbitSeconds)/flySeconds));
         const fadeT = Math.max(0, Math.min(1, (t - orbitSeconds - flySeconds)/fadeInSeconds));
 
-        ctx.strokeStyle = isDay ? "rgba(43,109,255,.18)" : "rgba(180,210,255,.14)";
+        ctx.strokeStyle = "rgba(180,210,255,.16)";
         ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.stroke();
 
@@ -1659,7 +1673,7 @@
           ctx.fill();
 
           ctx.globalAlpha = 0.45 * alpha;
-          ctx.strokeStyle = isDay ? "rgba(43,109,255,.16)" : "rgba(180,210,255,.12)";
+          ctx.strokeStyle = "rgba(180,210,255,.12)";
           ctx.lineWidth = 1;
           drawStar(ctx, x, y, 5, 18, 8);
           ctx.stroke();
@@ -1669,7 +1683,7 @@
             const size = 22;
             ctx.drawImage(node.img, x - size/2, y - size/2, size, size);
           } else {
-            ctx.fillStyle = isDay ? "rgba(15,27,58,.92)" : "rgba(238,243,255,.92)";
+            ctx.fillStyle = "rgba(238,243,255,.92)";
             ctx.font = "14px system-ui";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
@@ -1710,10 +1724,7 @@
 
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
-      // Start theme early so intro background matches
       applyTheme("auto");
-
-      // Base tiles are set via theme
       setBaseTiles("auto");
 
       const geoUrl = `https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson?v=${encodeURIComponent(BUILD_VERSION)}`;
@@ -1900,7 +1911,6 @@
         }
       });
 
-      // initial clock state
       setClockMode(false);
     }
 

@@ -15,8 +15,7 @@
       "Role": "Transit security & liaison",
       "Access": "Controlled"
     },
-    "overview": "A forward coordination node supporting logistics and protective escorting.\n\nRotational detachments and an administrative liaison office operate on-site.",
-    "image": "checkpoint_alpha.png"
+    "overview": "A forward coordination node supporting logistics and protective escorting.\n\nRotational detachments and an administrative liaison office operate on-site."
   },
   {
     "id": "OFN-ORION",
@@ -34,7 +33,9 @@
       "Role": "Research of extreme Climate",
       "Access": "Controlled"
     },
-    "overview": "Remote scientific research station located in Antarctica."
+    "overview": "Remote scientific research station located in Antarctica.",
+    "image": "antarc.png"
   }
 
 ]
+

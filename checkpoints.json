@@ -1,0 +1,39 @@
+[
+  {
+    "id": "OFN-ALPHA",
+    "name": "OFN Checkpoint Alpha",
+    "kind": "Military checkpoint",
+    "status": "Active",
+    "shape": "circle",
+    "lat": 49.6116,
+    "lng": 6.1319,
+    "radius_km": 18,
+    "color": "rgba(43,109,255,.30)",
+    "icon": "⬛",
+    "meta": {
+      "Region": "Luxembourg corridor",
+      "Role": "Transit security & liaison",
+      "Access": "Controlled"
+    },
+    "overview": "A forward coordination node supporting logistics and protective escorting.\n\nRotational detachments and an administrative liaison office operate on-site.",
+    "image": "checkpoint_alpha.png"
+  },
+  {
+    "id": "OFN-ORION",
+    "name": "Project ORION Site",
+    "kind": "Research checkpoint",
+    "status": "Restricted",
+    "shape": "square",
+    "lat": 31.7683,
+    "lng": 35.2137,
+    "size_km": 12,
+    "color": "rgba(255,204,51,.26)",
+    "icon": "◼",
+    "meta": {
+      "Division": "Applied systems",
+      "Security": "Tier-2",
+      "Notes": "Non-public brief"
+    },
+    "overview": "A sealed research and testing perimeter.\n\nLocal coordination is handled through an OFN liaison office and partner authorities."
+  }
+]

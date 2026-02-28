@@ -14,361 +14,236 @@
 
   <style>
     :root{
-      --bg0:#0b1020;
-      --bg1:#0a1430;
-      --bg2:#071026;
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --line:#d7deef;
+      --line2:#c9d2ea;
+      --text:#0f1b3a;
+      --muted:#51607f;
 
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.09);
-
-      --line: rgba(255,255,255,.14);
-      --line2: rgba(255,255,255,.22);
-
-      --text:#eaf0ff;
-      --muted: rgba(234,240,255,.72);
-
-      --member:#2b6dff;
+      --member:#1b3fbf;
       --founding:#ffcc33;
       --observer:#f2994a;
       --invite:#18a999;
-      --conflict:#ff4b4b;
-      --neutral:#7f9ccf;
+      --conflict:#e23b3b;
+      --neutral:#9bb0cf;
 
-      /* HARD EDGES */
-      --r: 4px;
-      --r2: 6px;
-
-      /* industrial strokes */
-      --stroke: rgba(255,255,255,.18);
-      --stroke2: rgba(43,109,255,.35);
-
-      /* harsher shadows */
-      --shadow: 0 22px 0 rgba(0,0,0,.22), 0 40px 60px rgba(0,0,0,.55);
-      --shadow2: 0 10px 0 rgba(0,0,0,.18), 0 18px 24px rgba(0,0,0,.35);
-
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --ui: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-
-      /* glitch/noise controls */
-      --grain: .16;     /* 0..1 */
-      --scan: .16;      /* 0..1 */
-    }
-
-    /* “Day” becomes overcast terminal (NOT white) */
-    :root[data-theme="day"]{
-      --bg0:#e7edf9;
-      --bg1:#cfdaf5;
-      --bg2:#aebfe9;
-
-      --card: rgba(10,16,32,.78);
-      --card2: rgba(10,16,32,.86);
-
-      --line: rgba(0,0,0,.22);
-      --line2: rgba(0,0,0,.32);
-
-      --text:#eef3ff;
-      --muted: rgba(238,243,255,.72);
-
-      --shadow: 0 22px 0 rgba(0,0,0,.12), 0 32px 44px rgba(0,0,0,.28);
-      --shadow2: 0 10px 0 rgba(0,0,0,.10), 0 18px 22px rgba(0,0,0,.20);
+      --shadow: 0 10px 26px rgba(15,27,58,.12);
+      --shadow2: 0 6px 16px rgba(15,27,58,.10);
+      --r:18px;
+      --r2:22px;
     }
 
     :root[data-theme="night"]{
-      /* explicit in case you ever set only night attribute */
-      --bg0:#0b1020;
-      --bg1:#0a1430;
-      --bg2:#071026;
+      --bg:#070b16;
+      --card: rgba(255,255,255,.08);
+      --line: rgba(255,255,255,.14);
+      --line2: rgba(255,255,255,.20);
+      --text:#eef3ff;
+      --muted: rgba(238,243,255,.72);
+
+      --shadow: 0 12px 28px rgba(0,0,0,.40);
+      --shadow2: 0 8px 18px rgba(0,0,0,.32);
     }
 
     *{ box-sizing:border-box; }
-    html,body{
-      height:100%;
-      margin:0;
-      font: 14px/1.35 var(--ui);
-      color:var(--text);
-      overflow:hidden;
-      background:
-        radial-gradient(900px 600px at 55% 10%, rgba(43,109,255,.18), transparent 60%),
-        radial-gradient(700px 500px at 15% 25%, rgba(255,204,51,.10), transparent 62%),
-        linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 55%, var(--bg2) 100%);
-    }
-
-    /* Scanlines */
-    body:before{
-      content:"";
-      position:fixed; inset:0;
-      pointer-events:none;
-      z-index:2;
-      opacity: var(--scan);
-      background:
-        repeating-linear-gradient(
-          0deg,
-          rgba(255,255,255,.06) 0 1px,
-          rgba(0,0,0,0) 1px 6px
-        );
-      mix-blend-mode: overlay;
-    }
-
-    /* Vignette + subtle vertical bars */
-    body:after{
-      content:"";
-      position:fixed; inset:0;
-      pointer-events:none;
-      z-index:2;
-      background:
-        radial-gradient(1200px 800px at 50% 30%, transparent 40%, rgba(0,0,0,.55) 100%),
-        repeating-linear-gradient(
-          90deg,
-          rgba(43,109,255,.03) 0 2px,
-          rgba(0,0,0,0) 2px 14px
-        );
-      opacity: .22;
-    }
-
-    /* Grain layer */
-    @keyframes grainShift{
-      0%{ transform:translate(0,0) }
-      20%{ transform:translate(-2%,1%) }
-      40%{ transform:translate(1%,-2%) }
-      60%{ transform:translate(2%,2%) }
-      80%{ transform:translate(-1%,2%) }
-      100%{ transform:translate(0,0) }
-    }
-    #grain{
-      position:fixed; inset:-20%;
-      pointer-events:none;
-      z-index:3;
-      opacity: var(--grain);
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-      animation: grainShift 2.2s steps(2,end) infinite;
+    html,body{ height:100%; margin:0; font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; color:var(--text); background:linear-gradient(180deg,#fff,var(--bg)); overflow:hidden; }
+    :root[data-theme="night"] body{
+      background: radial-gradient(900px 600px at 50% 15%, rgba(43,109,255,.12), transparent 60%),
+                  linear-gradient(180deg, #040611 0%, #070b16 55%, #0a1022 100%);
     }
 
     #map{ position:fixed; inset:0; z-index:1; }
 
-    /* --- Brutal, cut-corner geometry --- */
-    .cutCorner{
-      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
-    }
-
-    /* Topbar */
     #topbar{
       position:fixed; z-index:30;
       left:16px; right:16px; top:14px;
-      min-height:62px;
-      padding:10px 12px;
+      min-height:60px;
+      padding:10px 14px;
       display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      background: var(--card2);
-      border:1px solid var(--stroke);
-      border-radius: 2px;
+      background:rgba(255,255,255,.90);
+      border:1px solid var(--line);
+      border-radius:var(--r2);
       box-shadow:var(--shadow2);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
       opacity:0;
-      transform: translateY(-8px);
+      transform: translateY(-6px);
       pointer-events:none;
       transition: opacity .28s ease, transform .28s ease, background .16s ease, border-color .16s ease;
-      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
     }
-    #topbar.ready{ opacity:1; transform: translateY(0); pointer-events:auto; }
+    #topbar.ready{
+      opacity:1; transform: translateY(0);
+      pointer-events:auto;
+    }
+
+    :root[data-theme="night"] #topbar,
+    :root[data-theme="night"] #statusline,
+    :root[data-theme="night"] #drawer,
+    :root[data-theme="night"] #fictionPanel{
+      background: rgba(10,14,28,.80) !important;
+      border-color: rgba(255,255,255,.14) !important;
+    }
 
     .brand{ display:flex; align-items:center; gap:12px; min-width:260px; }
     .emblem{
-      width:40px; height:40px;
-      border-radius: 4px;
-      border:1px solid var(--stroke);
-      background:
-        radial-gradient(circle at 35% 30%, rgba(43,109,255,.38), rgba(27,63,191,.12) 55%, rgba(255,255,255,.10) 100%),
-        linear-gradient(135deg, rgba(255,204,51,.18), transparent 45%);
-      box-shadow: 0 0 0 2px rgba(255,204,51,.22), 0 0 0 7px rgba(43,109,255,.14);
+      width:38px; height:38px; border-radius:14px;
+      border:1px solid var(--line);
+      background: radial-gradient(circle at 35% 30%, rgba(43,109,255,.35), rgba(27,63,191,.10) 55%, rgba(255,255,255,1) 100%);
+      box-shadow: 0 0 0 6px rgba(27,63,191,.06);
       position:relative; overflow:hidden;
       flex:0 0 auto;
     }
     .emblem:after{
       content:"";
-      position:absolute; inset:-40%;
-      background: conic-gradient(from 210deg,
-        rgba(255,204,51,0) 0 22%,
-        rgba(255,204,51,.35) 22% 28%,
-        rgba(255,204,51,0) 28% 56%,
-        rgba(43,109,255,.28) 56% 64%,
-        rgba(255,204,51,0) 64% 100%);
-      animation: spin 9.5s linear infinite;
-      opacity:.85;
+      position:absolute; inset:-35%;
+      background: conic-gradient(from 200deg, rgba(255,204,51,.0) 0 20%, rgba(255,204,51,.35) 20% 26%, rgba(255,204,51,0) 26% 55%, rgba(43,109,255,.22) 55% 62%, rgba(255,204,51,0) 62% 100%);
+      animation: spin 10s linear infinite;
+      opacity:.9;
     }
     @keyframes spin{ to{ transform:rotate(360deg);} }
 
-    .brand h1{
-      margin:0;
-      font: 12px/1.1 var(--mono);
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      color: var(--member);
-      text-shadow: 1px 0 rgba(43,109,255,.35), -1px 0 rgba(255,204,51,.25);
-    }
-    .brand .sub{ margin:4px 0 0 0; font-size:12px; color:var(--muted); font-family: var(--mono); opacity:.9; }
-
-    /* Subtle jitter for title */
-    @keyframes jitter{
-      0%,100%{ transform:translate(0,0) }
-      92%{ transform:translate(0,0) }
-      93%{ transform:translate(1px,-1px) }
-      94%{ transform:translate(-1px,1px) }
-      95%{ transform:translate(2px,0) }
-      96%{ transform:translate(-2px,0) }
-      97%{ transform:translate(1px,1px) }
-      98%{ transform:translate(0,-1px) }
-      99%{ transform:translate(0,0) }
-    }
-    #topbar.ready .brand h1{ animation: jitter 6.5s infinite; }
+    .brand h1{ margin:0; font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:var(--member); }
+    .brand .sub{ margin:2px 0 0 0; font-size:12px; color:var(--muted); }
 
     .controls{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
 
-    /* Kill bubbly feel globally */
     input, select, button{
-      border-radius: 2px !important;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.28);
-      color: var(--text);
-      padding:9px 11px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      padding:9px 12px;
       outline:none;
+      box-shadow:0 0 0 0 rgba(43,109,255,0);
       transition: box-shadow .16s ease, border-color .16s ease, transform .10s ease, background .16s ease, color .16s ease;
-      backdrop-filter: blur(10px);
-      font-family: var(--mono);
-      letter-spacing: .02em;
     }
     input{ min-width: 220px; }
-    input::placeholder{ color: rgba(234,240,255,.55); }
-
-    button{ cursor:pointer; }
-    button{
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.18)) !important;
-      border-color: rgba(255,255,255,.18) !important;
-    }
-    button:hover{
-      border-color: rgba(255,255,255,.26) !important;
-      box-shadow: 0 0 0 2px rgba(43,109,255,.18), 0 0 0 6px rgba(255,204,51,.08) !important;
-    }
+    input::placeholder{ color: rgba(81,96,127,.65); }
+    button{ cursor:pointer; background: linear-gradient(180deg,#fff,#f7f9ff); }
+    button:hover{ border-color: var(--line2); box-shadow: 0 0 0 4px rgba(43,109,255,.10); }
     button:active{ transform: translateY(1px); }
-
     .primary{
-      border-color: rgba(43,109,255,.55) !important;
-      background: linear-gradient(90deg, rgba(43,109,255,.28), rgba(255,204,51,.12)) !important;
+      border-color: rgba(27,63,191,.25);
+      background: linear-gradient(180deg, rgba(43,109,255,.12), rgba(27,63,191,.06));
     }
 
-    /* Dropdown usability: dark popup list in BOTH themes */
+    :root[data-theme="night"] input,
     :root[data-theme="night"] select,
-    :root[data-theme="day"] select{
-      background: #000 !important;
-      color: #fff !important;
-      border-color: rgba(255,255,255,.20);
+    :root[data-theme="night"] button{
+      background: rgba(255,255,255,.10);
+      color: var(--text);
+      border-color: rgba(255,255,255,.16);
     }
-    :root[data-theme="night"] select option,
-    :root[data-theme="day"] select option{
-      background: #000 !important;
-      color: #fff !important;
-    }
+    :root[data-theme="night"] input::placeholder{ color: rgba(238,243,255,.55); }
 
     #statusline{
       position:fixed; z-index:25;
       left:16px; bottom:16px;
-      background: var(--card2);
-      border:1px solid var(--stroke);
-      border-radius: 2px;
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius:999px;
       padding:10px 12px;
       box-shadow:var(--shadow2);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
       display:flex; gap:10px; align-items:center;
       color:var(--muted);
       max-width: calc(100vw - 32px);
       opacity:0;
-      transform: translateY(10px);
+      transform: translateY(6px);
       pointer-events:none;
       transition: opacity .28s ease, transform .28s ease;
-      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
     }
     #statusline.ready{ opacity:1; transform: translateY(0); pointer-events:auto; }
-    .pillDot{ width:9px; height:9px; border-radius:0; background:var(--member); box-shadow: 0 0 0 3px rgba(43,109,255,.18); }
-    #statusline b{ color:var(--text); font-family: var(--mono); }
-    #clockInfo{ display:none; white-space:nowrap; font-family: var(--mono); }
-    #clockInfo.on{ display:inline; }
+    .pillDot{ width:9px; height:9px; border-radius:50%; background:var(--member); box-shadow: 0 0 0 4px rgba(43,109,255,.12); }
+    #statusline b{ color:var(--text); }
 
     #drawer{
       position:fixed; z-index:35;
       top:88px; left:16px; bottom:16px;
-      width:min(480px, calc(100vw - 32px));
-      background: var(--card2);
-      border:1px solid var(--stroke);
-      border-radius: 2px;
+      width:min(460px, calc(100vw - 32px));
+      background:rgba(255,255,255,.94);
+      border:1px solid var(--line);
+      border-radius:var(--r2);
       box-shadow:var(--shadow);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
       transform: translateX(-112%);
       transition: transform .22s ease;
       overflow:hidden;
       display:flex; flex-direction:column;
-      clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
     }
     #drawer.open{ transform: translateX(0); }
 
-    /* Tape-label header vibe */
     .drawerHead{
       padding:14px 14px 12px 14px;
-      border-bottom:1px dashed rgba(255,255,255,.22);
+      border-bottom:1px solid var(--line);
       display:flex; gap:12px; align-items:center; justify-content:space-between;
-      background: linear-gradient(90deg, rgba(255,204,51,.14), rgba(43,109,255,.12), rgba(255,255,255,.02));
+      background: linear-gradient(180deg,#fff, rgba(247,249,255,.85));
+    }
+    :root[data-theme="night"] .drawerHead{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-bottom-color: rgba(255,255,255,.12);
     }
 
     .drawerTitle{ display:flex; align-items:center; gap:10px; min-width:0; }
     .flagBig{
-      width:44px; height:44px;
-      border-radius: 2px;
+      width:44px; height:44px; border-radius:16px;
       display:grid; place-items:center;
-      border:1px dashed rgba(255,255,255,.20);
-      background: rgba(0,0,0,.22);
-      box-shadow: 0 0 0 2px rgba(43,109,255,.18);
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow:0 0 0 6px rgba(27,63,191,.06);
       font-size:22px;
       flex:0 0 auto;
     }
+    :root[data-theme="night"] .flagBig{ background: rgba(255,255,255,.10); }
 
     .titleText{ min-width:0; }
-    .titleText h2{
-      margin:0; font-size:16px;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-      font-family: var(--mono);
-      letter-spacing:.02em;
-    }
+    .titleText h2{ margin:0; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .titleText .mini{
-      margin-top:4px;
+      margin-top:2px;
       font-size:12px;
       color:var(--muted);
       display:flex; gap:8px; align-items:center; flex-wrap:wrap;
-      font-family: var(--mono);
     }
 
     .badge{
       padding:4px 9px;
-      border-radius: 2px !important;
-      border:1px dashed rgba(255,255,255,.22) !important;
-      background: rgba(0,0,0,.22) !important;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
       font-size:12px;
       color:var(--muted);
       white-space:nowrap;
-      font-family: var(--mono);
-      letter-spacing:.06em;
-      text-transform:uppercase;
     }
+    :root[data-theme="night"] .badge{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.16);
+      color: rgba(238,243,255,.78);
+    }
+
+    .badge.member{ border-color: rgba(43,109,255,.40); color:#1033a3; }
+    .badge.founding{ border-color: rgba(255,204,51,.60); color:#7c5b00; }
+    .badge.observer{ border-color: rgba(242,153,74,.55); color:#7b3f00; }
+    .badge.invite{ border-color: rgba(24,169,153,.55); color:#0b5b51; }
+    .badge.conflict{ border-color: rgba(226,59,59,.55); color:#7b1414; }
+    .badge.hq{ border-color: rgba(27,63,191,.40); color:#1033a3; }
+
+    :root[data-theme="night"] .badge.member{ color: rgba(180,210,255,.90); }
+    :root[data-theme="night"] .badge.founding{ color: rgba(255,236,170,.92); }
+    :root[data-theme="night"] .badge.observer{ color: rgba(255,210,170,.92); }
+    :root[data-theme="night"] .badge.invite{ color: rgba(170,255,235,.92); }
+    :root[data-theme="night"] .badge.conflict{ color: rgba(255,180,190,.92); }
+    :root[data-theme="night"] .badge.hq{ color: rgba(180,210,255,.90); }
 
     .drawerActions{ display:flex; gap:8px; align-items:center; }
     .iconBtn{
-      width:38px; height:38px;
-      border-radius: 2px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.22);
+      width:38px; height:38px; border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
       cursor:pointer;
       display:grid; place-items:center;
-      font-family: var(--mono);
     }
-    .iconBtn:hover{ box-shadow: 0 0 0 2px rgba(43,109,255,.18), 0 0 0 6px rgba(255,204,51,.08); }
+    :root[data-theme="night"] .iconBtn{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.16); color: var(--text); }
+    .iconBtn:hover{ box-shadow: 0 0 0 4px rgba(43,109,255,.10); }
 
     .drawerBody{
       padding:12px 14px 14px 14px;
@@ -377,46 +252,55 @@
       min-height:0;
     }
     .card{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius: 2px;
-      background: rgba(0,0,0,.16);
-      box-shadow: 0 10px 22px rgba(0,0,0,.18);
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      background:#fff;
+      box-shadow: 0 6px 14px rgba(15,27,58,.06);
       padding:12px;
+    }
+    :root[data-theme="night"] .card{
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.14);
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
     }
 
     .card h3{
       margin:0 0 8px 0;
-      font: 12px/1.1 var(--mono);
-      letter-spacing:.18em;
+      font-size:12px;
+      letter-spacing:.16em;
       text-transform:uppercase;
       color:var(--muted);
     }
-
     .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-
     .kv{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius: 2px;
+      border:1px solid var(--line);
+      border-radius:14px;
       padding:10px;
-      background: rgba(0,0,0,.16);
+      background: linear-gradient(180deg,#fff,#fbfcff);
+    }
+    :root[data-theme="night"] .kv{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.06));
+      border-color: rgba(255,255,255,.14);
     }
     .kv .k{
-      font: 11px/1.1 var(--mono);
+      font-size:11px;
       letter-spacing:.14em;
       text-transform:uppercase;
       color:var(--muted);
     }
-    .kv .v{ margin-top:6px; font-weight:650; color:var(--text); overflow-wrap:anywhere; font-family: var(--mono); }
-
-    .note{ margin:0; color:var(--muted); font-family: var(--ui); }
-    .link{ color: var(--member); text-decoration: none; border-bottom: 1px dotted rgba(43,109,255,.65); font-family: var(--mono); }
-    .link:hover{ border-bottom-color: rgba(43,109,255,.95); }
+    .kv .v{ margin-top:4px; font-weight:650; color:var(--text); overflow-wrap:anywhere; }
+    .note{ margin:0; color:var(--muted); }
+    .link{ color: var(--member); text-decoration: none; border-bottom: 1px dotted rgba(27,63,191,.35); }
+    .link:hover{ border-bottom-color: rgba(27,63,191,.75); }
 
     #intro{
       position:fixed; inset:0; z-index:60;
-      background: var(--bg0);
+      background:#ffffff;
       display:grid; place-items:center;
       transition: opacity .28s ease;
+    }
+    :root[data-theme="night"] #intro{
+      background:#070b16;
     }
     #intro.hidden{ opacity:0; pointer-events:none; }
     #introCanvas{
@@ -425,7 +309,7 @@
       display:block;
     }
 
-    /* Fictional panel */
+    /* --- Fictional panel (right-middle, pull-out) --- */
     #fictionPanel{
       position:fixed; z-index:34;
       right:16px;
@@ -433,43 +317,53 @@
       transform: translateY(-50%);
       width: 320px;
       max-height: min(520px, calc(100vh - 140px));
-      background: var(--card2);
-      border: 1px solid var(--stroke);
-      border-radius: 2px;
+      background: rgba(255,255,255,.94);
+      border: 1px solid var(--line);
+      border-radius: var(--r2);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
       overflow: hidden;
       display:flex;
       transition: transform .22s ease;
-      clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
     }
-    #fictionPanel.closed{ transform: translate( calc(100% - 46px), -50% ); }
+
+    /* closed state slides almost fully off-screen, leaving the handle visible */
+    #fictionPanel.closed{
+      transform: translate( calc(100% - 46px), -50% );
+    }
 
     .fictionHandle{
       width:46px;
-      border-right: 1px dashed rgba(255,255,255,.22);
+      border-right: 1px solid var(--line);
       display:flex;
       align-items:center;
       justify-content:center;
-      background: linear-gradient(180deg, rgba(255,204,51,.10), rgba(43,109,255,.08), rgba(255,255,255,.02));
+      background: linear-gradient(180deg,#fff, rgba(247,249,255,.85));
       flex:0 0 auto;
+    }
+    :root[data-theme="night"] .fictionHandle{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-right-color: rgba(255,255,255,.12);
     }
 
     .fictionHandle button{
       width:34px; height:34px;
       padding:0;
-      border-radius: 2px;
+      border-radius:999px;
       display:grid; place-items:center;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.55);
+      border:1px solid var(--line);
+      background:#fff;
       cursor:pointer;
-      color:#fff;
-      font-family: var(--mono);
     }
-    .fictionHandle button:hover{ box-shadow: 0 0 0 2px rgba(43,109,255,.18), 0 0 0 6px rgba(255,204,51,.08); }
+    :root[data-theme="night"] .fictionHandle button{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.16);
+      color: var(--text);
+    }
+    .fictionHandle button:hover{ box-shadow: 0 0 0 4px rgba(43,109,255,.10); }
 
     .fictionBody{
-      padding:12px;
+      padding:12px 12px 12px 12px;
       overflow:auto;
       min-height:0;
       display:flex;
@@ -480,23 +374,28 @@
     .fictionTitle{
       display:flex; align-items:baseline; justify-content:space-between; gap:10px;
       padding-bottom:8px;
-      border-bottom:1px dashed rgba(255,255,255,.22);
+      border-bottom:1px solid var(--line);
     }
+    :root[data-theme="night"] .fictionTitle{ border-bottom-color: rgba(255,255,255,.12); }
 
     .fictionTitle h3{
       margin:0;
-      font: 12px/1.1 var(--mono);
-      letter-spacing:.18em;
+      font-size:12px;
+      letter-spacing:.16em;
       text-transform:uppercase;
       color:var(--muted);
     }
-    .fictionHint{ font-size:12px; color:var(--muted); white-space:nowrap; font-family: var(--mono); opacity:.85; }
+    .fictionHint{
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
 
     .fictionList{ display:flex; flex-direction:column; gap:8px; }
     .fictionItem{
-      border-radius: 2px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.16);
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg,#fff,#fbfcff);
       padding:10px;
       cursor:pointer;
       display:flex;
@@ -505,22 +404,24 @@
       gap:10px;
       transition: transform .10s ease, border-color .16s ease, box-shadow .16s ease;
     }
+    :root[data-theme="night"] .fictionItem{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.06));
+      border-color: rgba(255,255,255,.14);
+    }
     .fictionItem:hover{
-      border-color: rgba(255,255,255,.22);
-      box-shadow: 0 0 0 2px rgba(43,109,255,.18), 0 0 0 6px rgba(255,204,51,.08);
+      border-color: var(--line2);
+      box-shadow: 0 0 0 4px rgba(43,109,255,.08);
     }
     .fictionItem:active{ transform: translateY(1px); }
 
     .fictionItem .left{ min-width:0; }
     .fictionItem .name{
-      font-weight: 760;
+      font-weight: 750;
       margin:0;
       font-size:13px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      font-family: var(--mono);
-      letter-spacing:.02em;
     }
     .fictionItem .sub{
       margin-top:4px;
@@ -529,51 +430,66 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      font-family: var(--mono);
     }
     .fictionItem .right{ display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
-
     .miniBadge{
       padding:3px 8px;
-      border-radius:2px !important;
-      border:1px dashed rgba(255,255,255,.22) !important;
-      background: rgba(0,0,0,.22) !important;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
       font-size:12px;
       color:var(--muted);
       white-space:nowrap;
-      font-family: var(--mono);
-      letter-spacing:.06em;
-      text-transform:uppercase;
     }
-    .miniBadge.member{ border-color: rgba(43,109,255,.45) !important; }
-    .miniBadge.invite{ border-color: rgba(24,169,153,.55) !important; }
-    .miniBadge.neutral{ border-color: rgba(127,156,207,.55) !important; }
+    :root[data-theme="night"] .miniBadge{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.16);
+      color: rgba(238,243,255,.78);
+    }
+    .miniBadge.member{ border-color: rgba(43,109,255,.40); color:#1033a3; }
+    .miniBadge.invite{ border-color: rgba(24,169,153,.55); color:#0b5b51; }
+    .miniBadge.neutral{ border-color: rgba(155,176,207,.70); color:#2c3a55; }
+    :root[data-theme="night"] .miniBadge.member{ color: rgba(180,210,255,.90); }
+    :root[data-theme="night"] .miniBadge.invite{ color: rgba(170,255,235,.92); }
+    :root[data-theme="night"] .miniBadge.neutral{ color: rgba(210,225,255,.82); }
 
-    /* Leaflet UI */
     .leaflet-control-attribution{
-      background: var(--card2) !important;
-      border: 1px solid rgba(255,255,255,.18) !important;
-      border-radius: 2px !important;
+      background: rgba(255,255,255,.90) !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 12px !important;
       box-shadow: var(--shadow2);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
       color: var(--muted) !important;
-      font-family: var(--mono);
     }
+    :root[data-theme="night"] .leaflet-control-attribution{
+      background: rgba(10,14,28,.80) !important;
+      border-color: rgba(255,255,255,.14) !important;
+      color: rgba(238,243,255,.70) !important;
+    }
+
     .leaflet-control-zoom a{
-      background: var(--card2) !important;
-      border: 1px solid rgba(255,255,255,.18) !important;
+      background: rgba(255,255,255,.92) !important;
+      border: 1px solid var(--line) !important;
       color: var(--text) !important;
-      border-radius: 2px !important;
-      font-family: var(--mono);
     }
+    :root[data-theme="night"] .leaflet-control-zoom a{
+      background: rgba(10,14,28,.80) !important;
+      border-color: rgba(255,255,255,.14) !important;
+      color: rgba(238,243,255,.92) !important;
+    }
+
     .leaflet-popup-content-wrapper, .leaflet-popup-tip{
-      background: var(--card2) !important;
-      border: 1px solid rgba(255,255,255,.18) !important;
+      background: rgba(255,255,255,.96) !important;
+      border: 1px solid var(--line) !important;
       box-shadow: var(--shadow2);
       color: var(--text) !important;
-      backdrop-filter: blur(12px);
-      border-radius: 2px !important;
-      font-family: var(--ui);
+      backdrop-filter: blur(10px);
+    }
+    :root[data-theme="night"] .leaflet-popup-content-wrapper,
+    :root[data-theme="night"] .leaflet-popup-tip{
+      background: rgba(10,14,28,.88) !important;
+      border-color: rgba(255,255,255,.14) !important;
+      color: rgba(238,243,255,.92) !important;
     }
 
     @media (max-width: 720px){
@@ -583,163 +499,25 @@
       input{ min-width: 160px; }
       .grid2{ grid-template-columns:1fr; }
       #introCanvas{ height:300px; }
+
+      /* Fiction panel a bit smaller on mobile */
       #fictionPanel{ right:12px; width: 300px; }
       #fictionPanel.closed{ transform: translate( calc(100% - 44px), -50% ); }
       .fictionHandle{ width:44px; }
       .fictionBody{ width: calc(300px - 44px); }
-    }
-
-    /* OFN modal */
-    #ofnOverlay{
-      position:fixed; inset:0;
-      z-index:80;
-      display:none;
-      place-items:center;
-      background: rgba(0,0,0,.65);
-      backdrop-filter: blur(12px);
-    }
-    #ofnOverlay.open{ display:grid; }
-
-    #ofnModal{
-      width:min(860px, calc(100vw - 28px));
-      max-height: min(78vh, 760px);
-      overflow:auto;
-      border-radius: 2px;
-      border:1px solid rgba(255,255,255,.18);
-      background:
-        radial-gradient(900px 380px at 30% 0%, rgba(43,109,255,.22), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.22));
-      box-shadow: 0 26px 60px rgba(0,0,0,.65);
-      position:relative;
-      clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
-    }
-
-    .ofnHead{
-      padding:14px 14px 10px 14px;
-      border-bottom:1px dashed rgba(255,255,255,.22);
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-      position:sticky; top:0;
-      background: inherit;
-      backdrop-filter: blur(12px);
-      z-index:2;
-    }
-    .ofnHead h2{
-      margin:0;
-      font: 14px/1.1 var(--mono);
-      letter-spacing:.22em;
-      text-transform: uppercase;
-      color: var(--text);
-      text-shadow: 1px 0 rgba(43,109,255,.35), -1px 0 rgba(255,204,51,.25);
-    }
-    .ofnHead p{
-      margin:8px 0 0 0;
-      color: var(--muted);
-      max-width: 64ch;
-      font-size: 13px;
-      font-family: var(--ui);
-    }
-    .ofnClose{
-      width:40px; height:40px;
-      border-radius: 2px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.35);
-      color: #fff;
-      cursor:pointer;
-      display:grid; place-items:center;
-      font-family: var(--mono);
-    }
-
-    .ofnBody{ padding:14px; display:grid; gap:12px; }
-    .ofnGrid{ display:grid; grid-template-columns: 1.2fr .8fr; gap:12px; }
-    @media (max-width: 820px){ .ofnGrid{ grid-template-columns: 1fr; } }
-
-    .ofnCard{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius: 2px;
-      background: rgba(0,0,0,.16);
-      padding:12px;
-    }
-    .ofnCard h3{
-      margin:0 0 8px 0;
-      font: 12px/1.1 var(--mono);
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      color: var(--muted);
-    }
-
-    .ofnImgWrap{
-      position:relative;
-      border-radius: 2px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.20);
-      box-shadow: 0 14px 28px rgba(0,0,0,.45);
-      min-height: 240px;
-      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-    }
-    .ofnImgWrap img{
-      width:100%; height:100%;
-      object-fit: cover;
-      display:block;
-      filter: contrast(1.04) saturate(1.02);
-    }
-
-    /* “wedged corners” look */
-    .ofnImgWrap:before,
-    .ofnImgWrap:after{
-      content:"";
-      position:absolute;
-      width:140px; height:140px;
-      background: rgba(255,255,255,.92);
-      mix-blend-mode: screen;
-      opacity: .10;
-      pointer-events:none;
-      transform: rotate(45deg);
-    }
-    .ofnImgWrap:before{ left:-80px; top:-80px; }
-    .ofnImgWrap:after{ right:-80px; bottom:-80px; }
-
-    .ofnBanner{
-      border-radius: 2px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.16);
-      height: 170px;
-      position:relative;
-      clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-    }
-    .ofnBanner img{
-      width:100%; height:100%;
-      object-fit: cover;
-      display:block;
-      opacity: .88;
-      filter: contrast(1.02) saturate(1.02);
-    }
-    .ofnBanner .stamp{
-      position:absolute;
-      left:12px; bottom:12px;
-      padding:6px 10px;
-      border-radius: 2px;
-      border:1px dashed rgba(255,255,255,.22);
-      background: rgba(0,0,0,.35);
-      color: rgba(255,255,255,.90);
-      font: 11px/1.1 var(--mono);
-      letter-spacing: .14em;
-      text-transform: uppercase;
     }
   </style>
 </head>
 
 <body>
   <div id="map"></div>
-  <div id="grain" aria-hidden="true"></div>
 
   <div id="topbar" role="banner">
     <div class="brand">
       <div class="emblem" aria-hidden="true"></div>
       <div>
         <h1>Organisation of Free Nations</h1>
-        <div class="sub">GLOBAL OPERATIONAL MAP</div>
+        <div class="sub">Interactive map</div>
       </div>
     </div>
 
@@ -759,10 +537,14 @@
         <option value="day">Theme: Day</option>
         <option value="night">Theme: Night</option>
       </select>
-
-      <button id="clockBtn" type="button" class="primary" title="Toggle timezone clock">Clock: Off</button>
+      <select id="links">
+        <option value="off">Links: Off</option>
+        <option value="diplomatic">Links: Diplomatic</option>
+        <option value="trade">Links: Trade</option>
+        <option value="political">Links: Political</option>
+        <option value="all">Links: All</option>
+      </select>
       <button id="focusBtn" type="button">Member focus: Off</button>
-      <button id="ofnBtn" type="button">The OFN</button>
       <button id="fitBtn" type="button">Fit</button>
       <button id="resetBtn" type="button">Reset</button>
     </div>
@@ -770,13 +552,10 @@
 
   <div id="statusline" aria-live="polite">
     <span class="pillDot"></span>
-    <span>
-      <b id="selName">No selection</b>
-      · <span id="selStatus">—</span>
-      <span id="clockInfo"> · <span id="clockText"></span></span>
-    </span>
+    <span><b id="selName">No selection</b> · <span id="selStatus">—</span></span>
   </div>
 
+  <!-- Fictional nations pull-out (right-middle) -->
   <aside id="fictionPanel" class="closed" aria-label="Fictional nations panel">
     <div class="fictionHandle">
       <button id="fictionToggle" type="button" title="Toggle fictional nations">◀</button>
@@ -807,54 +586,6 @@
     <div class="drawerBody" id="drawerBody"></div>
   </aside>
 
-  <!-- OFN modal -->
-  <div id="ofnOverlay" role="dialog" aria-modal="true" aria-label="The OFN information">
-    <div id="ofnModal">
-      <div class="ofnHead">
-        <div>
-          <h2>The OFN</h2>
-          <p>
-            The Organisation of Free Nations coordinates member-state cooperation in security, stability, humanitarian response,
-            and the defense of constitutional order — a network built to keep peace from being a “temporary setting.”
-          </p>
-        </div>
-        <button class="ofnClose" id="ofnClose" type="button" title="Close">✕</button>
-      </div>
-
-      <div class="ofnBody">
-        <div class="ofnBanner">
-          <img src="ofn2.png" alt="OFN peacekeepers in the field">
-          <div class="stamp">Field operations</div>
-        </div>
-
-        <div class="ofnGrid">
-          <div class="ofnCard">
-            <h3>Mandate</h3>
-            <p class="note" style="margin:0 0 10px 0;">
-              Collective action where states request support, where peace is threatened, and where rule-of-law institutions require protection.
-              The OFN operates as a framework — not a conquest machine, not a flag-collection hobby.
-            </p>
-            <p class="note" style="margin:0;">
-              This map shows membership status, observers, invitations, and fictional nations used in your roleplay universe.
-            </p>
-          </div>
-
-          <div class="ofnImgWrap" aria-label="OFN imagery">
-            <img src="ofn1.png" alt="OFN peacekeepers operating in contested terrain">
-          </div>
-        </div>
-
-        <div class="ofnCard">
-          <h3>How to use this page</h3>
-          <p class="note" style="margin:0;">
-            Click a country to open the dossier panel. Use <b>Clock</b> to view local time estimates based on geographic longitude.
-            Use <b>Member focus</b> to spotlight member and founding states. Use <b>Theme</b> to swap the atmosphere.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <section id="intro" aria-label="Loading">
     <canvas id="introCanvas"></canvas>
   </section>
@@ -866,8 +597,8 @@
   ></script>
 
   <script>
-    // Bump this when you want to brute-force cache busting while testing deploys
-    const BUILD_VERSION = "2026-02-28-3";
+    // Simple version string you can bump to hard-bust caches while testing deploys
+    const BUILD_VERSION = "2026-02-28-1";
 
     const OFN = {
       members: new Set(["Luxembourg","Falkland Islands","Israel","United States of America","Philippines","Australia","Greece","Georgia","Ireland"]),
@@ -965,7 +696,10 @@
 
     function statusOf(name){
       const n = canonicalName(name);
+
+      // If fictional, use its own status
       if (FICTIONAL.has(n)) return FICTIONAL.get(n).status;
+
       if (OFN.founding.has(n)) return "founding";
       if (OFN.members.has(n)) return "member";
       if (OFN.observer.has(n)) return "observer";
@@ -985,6 +719,18 @@
       }[s] || "Neutral");
     }
 
+    function statusColor(s){
+      const css = getComputedStyle(document.documentElement);
+      return ({
+        member: css.getPropertyValue("--member").trim(),
+        founding: css.getPropertyValue("--founding").trim(),
+        observer: css.getPropertyValue("--observer").trim(),
+        invite: css.getPropertyValue("--invite").trim(),
+        conflict: css.getPropertyValue("--conflict").trim(),
+        neutral: css.getPropertyValue("--neutral").trim()
+      }[s] || css.getPropertyValue("--neutral").trim());
+    }
+
     function badgeClass(s){
       return ({
         member:"member",
@@ -996,19 +742,6 @@
       }[s] || "neutral");
     }
 
-    function statusColor(s){
-      const css = getComputedStyle(document.documentElement);
-      const val = ({
-        member: css.getPropertyValue("--member").trim(),
-        founding: css.getPropertyValue("--founding").trim(),
-        observer: css.getPropertyValue("--observer").trim(),
-        invite: css.getPropertyValue("--invite").trim(),
-        conflict: css.getPropertyValue("--conflict").trim(),
-        neutral: css.getPropertyValue("--neutral").trim()
-      }[s] || css.getPropertyValue("--neutral").trim());
-      return val;
-    }
-
     function escapeHTML(s){
       return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
     }
@@ -1016,14 +749,11 @@
     const el = (id) => document.getElementById(id);
     const normalize = (s) => (s||"").toLowerCase().replace(/\s+/g," ").trim();
 
-    let map, baseLayer = null, countriesLayer;
+    let map, baseLayer = null, countriesLayer, linksLayer = null;
     let selectedFeature = null;
     let selectedName = null;
-    let memberFocus = false;
 
-    // clock mode
-    let clockMode = false;
-    let clockTickTimer = null;
+    let memberFocus = false;
 
     const topbar = el("topbar");
     const statusline = el("statusline");
@@ -1035,6 +765,7 @@
       return (h >= 7 && h < 19) ? "day" : "night";
     }
 
+    // Switch tiles to match theme (fixes the "UI dark but map still daytime" vibe)
     function setBaseTiles(mode){
       if (!map) return;
       const actual = (mode === "auto") ? getAutoTheme() : mode;
@@ -1058,11 +789,16 @@
       const root = document.documentElement;
       let actual = mode;
       if (mode === "auto") actual = getAutoTheme();
-      root.setAttribute("data-theme", actual);
+      if (actual === "night") root.setAttribute("data-theme", "night");
+      else root.removeAttribute("data-theme");
 
+      // keep map tiles coherent with theme
       setBaseTiles(mode);
+
+      setTimeout(() => refreshLinks(), 0);
+
+      // update fictional toggle arrow direction based on open/closed
       syncFictionToggleIcon();
-      updateClockLine();
     }
 
     function startThemeClock(){
@@ -1076,13 +812,11 @@
       if (!name){
         el("selName").textContent = "No selection";
         el("selStatus").textContent = "—";
-        updateClockLine();
         return;
       }
       const s = statusOf(name);
       el("selName").textContent = name;
       el("selStatus").textContent = statusLabel(s);
-      updateClockLine();
     }
 
     function openDrawer(){ drawer.classList.add("open"); }
@@ -1104,15 +838,16 @@
     function setDrawerHeader(name){
       const n = canonicalName(name);
       el("dName").textContent = n;
-      if (FICTIONAL.has(n)) el("dFlag").textContent = FICTIONAL.get(n).flag || "🗺️";
-      else el("dFlag").textContent = "🌍";
+
+      // For fictional: use its icon; otherwise globe
+      if (FICTIONAL.has(n)){
+        el("dFlag").textContent = FICTIONAL.get(n).flag || "🗺️";
+      } else {
+        el("dFlag").textContent = "🌍";
+      }
+
       el("dMini").innerHTML = situationBadges(n);
     }
-
-    // Fix Georgia ambiguity + detect disambiguation
-    const DISAMBIG_OVERRIDES = new Map([
-      ["Georgia", "Georgia (country)"]
-    ]);
 
     async function fetchWikiSummary(title){
       const t = encodeURIComponent(title.replace(/\s+/g, "_"));
@@ -1187,6 +922,7 @@
     async function fillDrawerFromInternet(name){
       const n = canonicalName(name);
 
+      // Fictional bypass (no Wikipedia)
       if (FICTIONAL.has(n)){
         fillDrawerFictional(n);
         return;
@@ -1208,22 +944,16 @@
       `);
 
       let wiki = null;
-      let titleToTry = DISAMBIG_OVERRIDES.get(n) || n;
 
-      try{ wiki = await fetchWikiSummary(titleToTry); }catch(_){}
-
-      if (wiki && wiki.type === "disambiguation"){
-        const retry = DISAMBIG_OVERRIDES.get(n) || (n === "Georgia" ? "Georgia (country)" : null);
-        if (retry){
-          try{ wiki = await fetchWikiSummary(retry); }catch(_){}
+      try{
+        wiki = await fetchWikiSummary(n);
+      }catch(_){
+        if (n === "United States of America"){
+          try{ wiki = await fetchWikiSummary("United States"); }catch(__){}
         }
       }
 
-      if (!wiki && n === "United States of America"){
-        try{ wiki = await fetchWikiSummary("United States"); }catch(_){}
-      }
-
-      if (wiki && (wiki.extract || wiki.description) && wiki.type !== "disambiguation"){
+      if (wiki && (wiki.extract || wiki.description)){
         const extract = wiki.extract ? escapeHTML(wiki.extract) : "";
         const desc = wiki.description ? escapeHTML(wiki.description) : "";
         const page = wiki.content_urls && wiki.content_urls.desktop && wiki.content_urls.desktop.page ? wiki.content_urls.desktop.page : null;
@@ -1240,7 +970,7 @@
         cards.push(`
           <div class="card">
             <h3>Overview</h3>
-            <p class="note" style="margin:0;">Could not load an external summary right now.</p>
+            <p class="note" style="margin:0;">Could not load external summary right now.</p>
           </div>
         `);
       }
@@ -1263,19 +993,19 @@
       const s = statusOf(name);
       const color = statusColor(s);
 
-      let fillOpacity = 0.30;
-      if (s === "member" || s === "founding") fillOpacity = 0.58;
-      if (s === "observer") fillOpacity = 0.44;
-      if (s === "invite") fillOpacity = 0.44;
-      if (s === "conflict") fillOpacity = 0.52;
+      let fillOpacity = 0.40;
+      if (s === "member" || s === "founding") fillOpacity = 0.55;
+      if (s === "observer") fillOpacity = 0.45;
+      if (s === "invite") fillOpacity = 0.45;
+      if (s === "conflict") fillOpacity = 0.50;
 
-      let opacity = 0.70;
-      let weight = 1.25;
+      let opacity = 0.60;
+      let weight = 1;
 
       const match = matchesFilter(s);
       if (!match){
-        fillOpacity = Math.min(fillOpacity, 0.08);
-        opacity = 0.10;
+        fillOpacity = Math.min(fillOpacity, 0.12);
+        opacity = 0.15;
       }
 
       if (memberFocus && selectedName){
@@ -1284,20 +1014,19 @@
         if (selectedIsMember){
           const thisIsMember = (s === "member" || s === "founding");
           if (!thisIsMember){
-            fillOpacity = Math.min(fillOpacity, 0.06);
-            opacity = Math.min(opacity, 0.09);
+            fillOpacity = Math.min(fillOpacity, 0.08);
+            opacity = Math.min(opacity, 0.12);
             weight = 1;
           } else {
-            fillOpacity = Math.max(fillOpacity, 0.64);
-            opacity = Math.max(opacity, 0.84);
-            weight = 1.45;
+            fillOpacity = Math.max(fillOpacity, 0.58);
+            opacity = Math.max(opacity, 0.75);
+            weight = 1.2;
           }
         }
       }
 
-      const isDay = document.documentElement.getAttribute("data-theme") === "day";
       return {
-        color: isDay ? "rgba(0,0,0,.34)" : "rgba(238,243,255,.18)",
+        color: "rgba(15,27,58,.18)",
         weight,
         fillColor: color,
         fillOpacity,
@@ -1310,10 +1039,12 @@
       if (selectedFeature === layer) return;
 
       if (on){
+        const st = statusOf(layer.feature.properties?.name || "");
+        const isMemberish = (st === "member" || st === "founding");
         layer.setStyle({
-          weight: 2.4,
-          color: "rgba(43,109,255,.55)",
-          fillOpacity: 0.72
+          weight: 2,
+          color: "rgba(27,63,191,.35)",
+          fillOpacity: Math.min(0.72, isMemberish ? 0.66 : 0.58)
         });
       } else {
         layer.setStyle(styleFeature(layer.feature));
@@ -1322,13 +1053,15 @@
 
     function refreshStyles(){
       if (!countriesLayer) return;
-      countriesLayer.eachLayer((layer) => layer.setStyle(styleFeature(layer.feature)));
+      countriesLayer.eachLayer((layer) => {
+        layer.setStyle(styleFeature(layer.feature));
+      });
       if (selectedFeature){
         selectedFeature.setStyle({
-          weight: 3.0,
-          color: "rgba(43,109,255,.75)",
-          fillOpacity: 0.82,
-          opacity: 0.95
+          weight: 2.5,
+          color: "rgba(27,63,191,.55)",
+          fillOpacity: 0.78,
+          opacity: 0.9
         });
       }
     }
@@ -1345,10 +1078,10 @@
       selectedName = name;
 
       layer.setStyle({
-        weight: 3.0,
-        color: "rgba(43,109,255,.75)",
-        fillOpacity: 0.82,
-        opacity: 0.95
+        weight: 2.5,
+        color: "rgba(27,63,191,.55)",
+        fillOpacity: 0.78,
+        opacity: 0.9
       });
 
       setStatusLine(name);
@@ -1364,12 +1097,14 @@
       });
 
       refreshStyles();
-      updateClockLine();
+      refreshLinks();
     }
 
+    // Selecting a fictional nation (no map feature)
     function selectFictional(name){
       const n = canonicalName(name);
 
+      // clear map selection highlight
       if (selectedFeature){
         selectedFeature.setStyle(styleFeature(selectedFeature.feature));
       }
@@ -1380,10 +1115,13 @@
       openDrawer();
 
       if (map) map.closePopup();
+
+      // Fill drawer locally (no fetch)
       fillDrawerFictional(n);
 
+      // Keep styles/links coherent with focus mode
       refreshStyles();
-      updateClockLine();
+      refreshLinks();
     }
 
     function zoomToSelected(){
@@ -1410,106 +1148,95 @@
       return partial;
     }
 
-    // ---------- CLOCK MODE (timezone-ish) ----------
-    function pad2(n){ return String(n).padStart(2, "0"); }
-
-    // approximate timezone offset from longitude, rounded to nearest hour
-    function approxUtcOffsetHoursFromLng(lng){
-      if (!isFinite(lng)) return null;
-      let off = Math.round(lng / 15);
-      off = Math.max(-12, Math.min(14, off));
-      return off;
+    function centroidOfLayer(layer){
+      const b = layer.getBounds();
+      const c = b.getCenter();
+      return [c.lat, c.lng];
     }
 
-    function utcNow(){
-      const d = new Date();
-      return new Date(d.getTime() + d.getTimezoneOffset() * 60000);
+    function memberCentroids(){
+      const out = [];
+      if (!countriesLayer) return out;
+
+      countriesLayer.eachLayer((layer) => {
+        const nm = canonicalName(layer.feature?.properties?.name || "");
+        const st = statusOf(nm);
+        if (st === "member" || st === "founding"){
+          out.push({ name: nm, latlng: centroidOfLayer(layer) });
+        }
+      });
+
+      return out;
     }
 
-    function formatUtcHHMM(dateUtc){
-      return `${pad2(dateUtc.getUTCHours())}:${pad2(dateUtc.getUTCMinutes())}`;
+    function linkStyle(kind){
+      const night = document.documentElement.getAttribute("data-theme") === "night";
+
+      if (kind === "diplomatic"){
+        return {
+          color: night ? "rgba(160,200,255,.45)" : "rgba(27,63,191,.45)",
+          weight: 2,
+          opacity: 0.75,
+          dashArray: "6 10"
+        };
+      }
+      if (kind === "trade"){
+        return {
+          color: night ? "rgba(120,255,220,.38)" : "rgba(24,169,153,.45)",
+          weight: 2,
+          opacity: 0.70,
+          dashArray: "2 10"
+        };
+      }
+      return {
+        color: night ? "rgba(255,210,120,.42)" : "rgba(255,204,51,.55)",
+        weight: 2.4,
+        opacity: 0.75
+      };
     }
 
-    function luxembourgTimeHHMM(){
-      try{
-        const d = new Date();
-        const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Luxembourg", hour:"2-digit", minute:"2-digit", hour12:false });
-        return fmt.format(d);
-      }catch(_){
-        const d = new Date();
-        return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    function buildLinks(kind){
+      if (!map) return;
+
+      if (linksLayer){
+        linksLayer.remove();
+        linksLayer = null;
       }
+      if (kind === "off") return;
+
+      const nodes = memberCentroids();
+      if (nodes.length < 2) return;
+
+      const groups = [];
+      const add = (a, b, k) => groups.push({ a, b, k });
+
+      for (let i = 0; i < nodes.length; i++){
+        for (let j = i + 1; j < nodes.length; j++){
+          if ((i + j) % 3 !== 0) continue;
+          if (kind === "all"){
+            add(nodes[i], nodes[j], "diplomatic");
+            if ((i + j) % 2 === 0) add(nodes[i], nodes[j], "trade");
+            if ((i + j) % 4 === 0) add(nodes[i], nodes[j], "political");
+          } else {
+            add(nodes[i], nodes[j], kind);
+          }
+        }
+      }
+
+      linksLayer = L.layerGroup();
+      for (const g of groups){
+        const line = L.polyline([g.a.latlng, g.b.latlng], linkStyle(g.k));
+        line.addTo(linksLayer);
+      }
+      linksLayer.addTo(map);
     }
 
-    function selectedCentroidLng(){
-      if (!selectedFeature) return null;
-      try{
-        const b = selectedFeature.getBounds();
-        const c = b.getCenter();
-        return c.lng;
-      }catch(_){
-        return null;
-      }
+    function refreshLinks(){
+      const sel = el("links");
+      if (!sel) return;
+      buildLinks(sel.value);
     }
 
-    function updateClockLine(){
-      const info = el("clockInfo");
-      const text = el("clockText");
-      if (!info || !text) return;
-
-      if (!clockMode){
-        info.classList.remove("on");
-        text.textContent = "";
-        return;
-      }
-
-      info.classList.add("on");
-
-      const u = utcNow();
-      const utcStr = `UTC ${formatUtcHHMM(u)}`;
-      const hqStr = `HQ ${luxembourgTimeHHMM()}`;
-
-      if (!selectedName){
-        text.textContent = `${utcStr} · ${hqStr}`;
-        return;
-      }
-
-      if (FICTIONAL.has(canonicalName(selectedName))){
-        text.textContent = `${utcStr} · ${hqStr}`;
-        return;
-      }
-
-      const lng = selectedCentroidLng();
-      const off = approxUtcOffsetHoursFromLng(lng);
-
-      if (off === null){
-        text.textContent = `${utcStr} · ${hqStr}`;
-        return;
-      }
-
-      const localMs = u.getTime() + off * 3600000;
-      const local = new Date(localMs);
-      const sign = off >= 0 ? "+" : "−";
-      const abs = Math.abs(off);
-      const selStr = `${pad2(local.getUTCHours())}:${pad2(local.getUTCMinutes())} (UTC${sign}${abs})`;
-
-      text.textContent = `${selStr} · ${hqStr} · ${utcStr}`;
-    }
-
-    function setClockMode(on){
-      clockMode = !!on;
-      el("clockBtn").textContent = `Clock: ${clockMode ? "On" : "Off"}`;
-      updateClockLine();
-
-      if (clockTickTimer) clearInterval(clockTickTimer);
-      if (clockMode){
-        clockTickTimer = setInterval(updateClockLine, 1000);
-      } else {
-        clockTickTimer = null;
-      }
-    }
-
-    // ---------- INTRO ----------
     function iso2FromName(name){
       const n = canonicalName(name);
       const mapIso = new Map([
@@ -1518,16 +1245,7 @@
         ["Israel","IL"],
         ["United States of America","US"],
         ["Philippines","PH"],
-        ["Brazil","BR"],
-        ["Georgia","GE"],
-        ["Ireland","IE"],
-        ["Greece","GR"],
-        ["Australia","AU"],
-        ["Portugal","PT"],
-        ["China","CN"],
-        ["Japan","JP"],
-        ["France","FR"],
-        ["Qatar","QA"]
+        ["Brazil","BR"]
       ]);
       return mapIso.get(n) || null;
     }
@@ -1581,41 +1299,63 @@
       resize();
       window.addEventListener("resize", resize, { passive:true });
 
+      // Collect real members
       const realMembers = Array.from(OFN.members);
+
+      // Collect fictional member states
       const fictionalMembers = Array.from(FICTIONAL.entries())
         .filter(([_, data]) => data.status === "member")
         .map(([name]) => name);
+
+      // Merge both
       const members = [...realMembers, ...fictionalMembers];
 
       const nodes = [];
+
       for (const name of members){
         const iso2 = iso2FromName(name);
         let img = null;
 
+        // Real countries use flag emoji images
         if (iso2){
-          try{ img = await loadImage(twemojiFlagUrlFromISO2(iso2)); } catch(_){ img = null; }
+          try{
+            img = await loadImage(twemojiFlagUrlFromISO2(iso2));
+          } catch(_){
+            img = null;
+          }
         }
 
+        // Fictional countries use their custom icon
         if (!img && FICTIONAL.has(name)){
           const icon = FICTIONAL.get(name).flag || "🗺️";
+
+          // Render emoji into temporary canvas for clean scaling
           const tempCanvas = document.createElement("canvas");
-          tempCanvas.width = 64; tempCanvas.height = 64;
+          tempCanvas.width = 64;
+          tempCanvas.height = 64;
           const tctx = tempCanvas.getContext("2d");
+
           tctx.font = "48px system-ui";
           tctx.textAlign = "center";
           tctx.textBaseline = "middle";
-          tctx.fillStyle = "#ffffff";
           tctx.fillText(icon, 32, 36);
+
           img = tempCanvas;
         }
 
-        nodes.push({ name, iso2, img, phase: Math.random() * Math.PI * 2 });
+        nodes.push({
+          name,
+          iso2,
+          img,
+          phase: Math.random() * Math.PI * 2
+        });
       }
 
       const orbitSeconds = 2.0;
       const flySeconds = 0.7;
       const fadeInSeconds = 0.55;
       const total = orbitSeconds + flySeconds + fadeInSeconds;
+
       let t0 = performance.now();
 
       function tick(now){
@@ -1625,8 +1365,9 @@
 
         ctx.clearRect(0,0,w,h);
 
-        const isDay = document.documentElement.getAttribute("data-theme") === "day";
-        ctx.fillStyle = isDay ? "#0b1020" : "#0b1020";
+        // Match intro background to theme (prevents the white-flash in night mode)
+        const isNight = document.documentElement.getAttribute("data-theme") === "night";
+        ctx.fillStyle = isNight ? "#070b16" : "#ffffff";
         ctx.fillRect(0,0,w,h);
 
         const cx = w*0.5, cy = h*0.5;
@@ -1636,13 +1377,17 @@
         const flyT = Math.max(0, Math.min(1, (t - orbitSeconds)/flySeconds));
         const fadeT = Math.max(0, Math.min(1, (t - orbitSeconds - flySeconds)/fadeInSeconds));
 
-        ctx.strokeStyle = "rgba(180,210,255,.16)";
+        ctx.strokeStyle = isNight ? "rgba(180,210,255,.14)" : "rgba(27,63,191,.16)";
         ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy, R, 0, Math.PI*2);
+        ctx.stroke();
 
         const pulse = 0.5 + 0.5*Math.sin(t*2.2);
         ctx.fillStyle = `rgba(255,204,51,${0.18 + 0.10*pulse})`;
-        ctx.beginPath(); ctx.arc(cx, cy, 4 + 2*pulse, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4 + 2*pulse, 0, Math.PI*2);
+        ctx.fill();
 
         const n = Math.max(1, nodes.length);
         const spin = t * 0.9;
@@ -1673,7 +1418,7 @@
           ctx.fill();
 
           ctx.globalAlpha = 0.45 * alpha;
-          ctx.strokeStyle = "rgba(180,210,255,.12)";
+          ctx.strokeStyle = isNight ? "rgba(180,210,255,.12)" : "rgba(27,63,191,.14)";
           ctx.lineWidth = 1;
           drawStar(ctx, x, y, 5, 18, 8);
           ctx.stroke();
@@ -1683,7 +1428,7 @@
             const size = 22;
             ctx.drawImage(node.img, x - size/2, y - size/2, size, size);
           } else {
-            ctx.fillStyle = "rgba(238,243,255,.92)";
+            ctx.fillStyle = isNight ? "rgba(238,243,255,.92)" : "rgba(15,27,58,.92)";
             ctx.font = "14px system-ui";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
@@ -1696,8 +1441,11 @@
         topbar.classList.toggle("ready", fadeT > 0.05);
         statusline.classList.toggle("ready", fadeT > 0.20);
 
-        if (t < total) requestAnimationFrame(tick);
-        else finishIntro();
+        if (t < total){
+          requestAnimationFrame(tick);
+        } else {
+          finishIntro();
+        }
       }
 
       requestAnimationFrame(tick);
@@ -1710,7 +1458,6 @@
       }
     }
 
-    // ---------- Map init ----------
     function initMap(){
       map = L.map("map", {
         zoomControl: false,
@@ -1724,7 +1471,7 @@
 
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
-      applyTheme("auto");
+      // Base tiles are set via theme (light/day vs dark/night)
       setBaseTiles("auto");
 
       const geoUrl = `https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson?v=${encodeURIComponent(BUILD_VERSION)}`;
@@ -1746,12 +1493,15 @@
 
           wireUI();
           wireFictionPanel();
+          applyTheme("auto");
           startThemeClock();
+          buildLinks("off");
           runIntroAnimation();
         })
         .catch(() => {
           wireUI();
           wireFictionPanel();
+          applyTheme("auto");
           startThemeClock();
           runIntroAnimation();
         });
@@ -1762,12 +1512,15 @@
       const toggle = el("fictionToggle");
       const list = el("fictionList");
 
+      // populate list
       const items = Array.from(FICTIONAL.entries()).map(([name, data]) => ({ name, ...data }));
+      // stable sort: members first, invites next, neutrals last (feel free to change)
       const order = { founding:0, member:1, observer:2, invite:3, neutral:4, conflict:5 };
       items.sort((a,b) => (order[a.status] ?? 9) - (order[b.status] ?? 9) || a.name.localeCompare(b.name));
 
       const miniClass = (s) => (s === "member" ? "member" : (s === "invite" ? "invite" : "neutral"));
 
+      // Store raw name safely in attribute (encoded)
       list.innerHTML = items.map(it => `
         <div class="fictionItem" role="button" tabindex="0" data-name="${encodeURIComponent(it.name)}" title="Open ${escapeHTML(it.name)}">
           <div class="left">
@@ -1787,6 +1540,7 @@
 
       toggle.addEventListener("click", () => setOpen(panel.classList.contains("closed")));
 
+      // click/keyboard activation
       list.addEventListener("click", (e) => {
         const item = e.target.closest(".fictionItem");
         if (!item) return;
@@ -1805,6 +1559,7 @@
         if (FICTIONAL.has(name)) selectFictional(name);
       });
 
+      // keep closed by default
       setOpen(false);
     }
 
@@ -1812,22 +1567,18 @@
       const panel = el("fictionPanel");
       const toggle = el("fictionToggle");
       if (!panel || !toggle) return;
+
+      // if closed, arrow points left (inviting you to pull it out)
+      // if open, arrow points right (to tuck it away)
       const isClosed = panel.classList.contains("closed");
       toggle.textContent = isClosed ? "◀" : "▶";
       toggle.title = isClosed ? "Show fictional nations" : "Hide fictional nations";
     }
 
-    // ---------- OFN modal ----------
-    function setOFNModal(open){
-      const overlay = el("ofnOverlay");
-      if (!overlay) return;
-      overlay.classList.toggle("open", !!open);
-    }
-
-    // ---------- UI wiring ----------
     function wireUI(){
       el("closeBtn").addEventListener("click", closeDrawer);
 
+      // Disable zoom button for fictional selection (no map bounds to zoom to)
       el("zoomBtn").addEventListener("click", () => {
         if (selectedFeature) zoomToSelected();
       });
@@ -1844,6 +1595,7 @@
       el("resetBtn").addEventListener("click", () => {
         el("search").value = "";
         el("filter").value = "all";
+        el("links").value = "off";
         el("theme").value = "auto";
         memberFocus = false;
         el("focusBtn").textContent = "Member focus: Off";
@@ -1857,16 +1609,22 @@
 
         setStatusLine(null);
         refreshStyles();
+        refreshLinks();
         applyTheme("auto");
         if (map) map.closePopup();
-
-        setClockMode(false);
-        setOFNModal(false);
       });
 
-      el("filter").addEventListener("change", refreshStyles);
+      el("filter").addEventListener("change", () => {
+        refreshStyles();
+      });
 
-      el("theme").addEventListener("change", (e) => applyTheme(e.target.value));
+      el("theme").addEventListener("change", (e) => {
+        applyTheme(e.target.value);
+      });
+
+      el("links").addEventListener("change", () => {
+        buildLinks(el("links").value);
+      });
 
       el("focusBtn").addEventListener("click", () => {
         memberFocus = !memberFocus;
@@ -1874,26 +1632,19 @@
         refreshStyles();
       });
 
-      el("clockBtn").addEventListener("click", () => setClockMode(!clockMode));
-
-      // OFN button + modal behavior
-      el("ofnBtn").addEventListener("click", () => setOFNModal(true));
-      el("ofnClose").addEventListener("click", () => setOFNModal(false));
-      el("ofnOverlay").addEventListener("click", (e) => {
-        if (e.target === el("ofnOverlay")) setOFNModal(false);
-      });
-
       const searchEl = el("search");
       const doSearch = () => {
         const q = searchEl.value.trim();
         if (!q) return;
 
+        // if it matches a fictional nation, open that
         const qCan = canonicalName(q);
         if (FICTIONAL.has(qCan)){
           selectFictional(qCan);
           return;
         }
 
+        // otherwise search real map countries
         const layer = findCountryLayerByName(q);
         if (layer){
           selectLayer(layer);
@@ -1905,16 +1656,21 @@
       });
 
       window.addEventListener("keydown", (e) => {
-        if (e.key === "Escape"){
-          closeDrawer();
-          setOFNModal(false);
-        }
+        if (e.key === "Escape") closeDrawer();
       });
 
-      setClockMode(false);
+      document.addEventListener("click", (e) => {
+        if (!drawer.classList.contains("open")) return;
+        const withinDrawer = drawer.contains(e.target);
+        const withinTopbar = topbar.contains(e.target);
+        const cls = String(e.target.className || "");
+        const isLeaflet = cls.includes("leaflet");
+        if (!withinDrawer && !withinTopbar && !isLeaflet){
+          // leaving open feels more “dashboard”
+        }
+      }, { capture:true });
     }
 
-    // boot
     setStatusLine(null);
     initMap();
   </script>

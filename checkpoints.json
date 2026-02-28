@@ -20,20 +20,21 @@
   },
   {
     "id": "OFN-ORION",
-    "name": "Project ORION Site",
+    "name": "O.F.N. Outpost 31",
     "kind": "Research checkpoint",
-    "status": "Restricted",
+    "status": "Active",
     "shape": "square",
-    "lat": 31.7683,
-    "lng": 35.2137,
+    "lat": -71.02,
+    "lng": 30.05,
     "size_km": 12,
     "color": "rgba(255,204,51,.26)",
     "icon": "◼",
     "meta": {
-      "Division": "Applied systems",
-      "Security": "Tier-2",
-      "Notes": "Non-public brief"
+      "Region": "Antarctic Region",
+      "Role": "Research of extreme Climate",
+      "Access": "Controlled"
     },
-    "overview": "A sealed research and testing perimeter.\n\nLocal coordination is handled through an OFN liaison office and partner authorities."
+    "overview": "Remote scientific research station located in Antarctica."
   }
+
 ]
